@@ -1,6 +1,10 @@
 <?php
 
-Route::redirect('/', '/login');
+Route::get('/', 'StorefrontController@home')->name('storefront.home');
+Route::get('/shop/{audience:slug}', 'StorefrontController@audience')->name('storefront.audience');
+Route::get('/shop/{audience:slug}/{category:slug}', 'StorefrontController@category')->name('storefront.category');
+Route::get('/brands/{brand:slug}', 'StorefrontController@brand')->name('storefront.brand');
+Route::get('/products/{product:slug}', 'StorefrontController@product')->name('storefront.product');
 Route::get('/home', function () {
     if (session('status')) {
         return redirect()->route('admin.home')->with('status', session('status'));
@@ -28,6 +32,12 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.', 'namespace' => 'Admin', 'mi
     // Audit Logs
     Route::resource('audit-logs', 'AuditLogsController', ['except' => ['create', 'store', 'edit', 'update', 'destroy']]);
 
+    // Store catalogue
+    Route::resource('audiences', 'AudiencesController')->except('show');
+    Route::resource('categories', 'CategoriesController')->except('show');
+    Route::resource('brands', 'BrandsController')->except('show');
+    Route::resource('products', 'ProductsController')->except('show');
+
     
 });
 Route::group(['prefix' => 'profile', 'as' => 'profile.', 'namespace' => 'Auth', 'middleware' => ['auth']], function () {
@@ -39,4 +49,3 @@ Route::group(['prefix' => 'profile', 'as' => 'profile.', 'namespace' => 'Auth', 
         Route::post('profile/destroy', 'ChangePasswordController@destroy')->name('password.destroyProfile');
     }
 });
-

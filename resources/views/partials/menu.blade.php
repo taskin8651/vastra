@@ -109,6 +109,13 @@
         @endcan
 
         <div class="nav-divider"></div>
+        <p class="sidebar-section-title nav-label">Store Catalogue</p>
+        <a href="{{ route('admin.audiences.index') }}" class="nav-link {{ request()->is('admin/audiences*') ? 'active' : '' }}"><i class="fas fa-users nav-icon"></i><span class="nav-label">Audiences</span></a>
+        <a href="{{ route('admin.categories.index') }}" class="nav-link {{ request()->is('admin/categories*') ? 'active' : '' }}"><i class="fas fa-tags nav-icon"></i><span class="nav-label">Categories</span></a>
+        <a href="{{ route('admin.brands.index') }}" class="nav-link {{ request()->is('admin/brands*') ? 'active' : '' }}"><i class="fas fa-copyright nav-icon"></i><span class="nav-label">Brands</span></a>
+        <a href="{{ route('admin.products.index') }}" class="nav-link {{ request()->is('admin/products*') ? 'active' : '' }}"><i class="fas fa-shirt nav-icon"></i><span class="nav-label">Products</span></a>
+
+        <div class="nav-divider"></div>
 
         <p class="sidebar-section-title compact nav-label">Account</p>
 

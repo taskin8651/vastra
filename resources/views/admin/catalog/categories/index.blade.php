@@ -1,0 +1,5 @@
+@extends('layouts.admin')
+@section('page-title', 'Categories')
+@section('content')
+<div class="admin-page-head"><div><h2 class="admin-page-title">Categories</h2><p class="admin-page-subtitle">Categories are linked to one audience.</p></div><a href="{{ route('admin.categories.create') }}" class="btn-primary"><i class="fas fa-plus"></i> Add Category</a></div><div class="page-card"><div class="page-card-table"><table class="min-w-full"><thead><tr><th>Name</th><th>Audience</th><th>Slug</th><th>Status</th><th></th></tr></thead><tbody>@forelse($categories as $category)<tr><td>{{ $category->name }}</td><td>{{ $category->audience->name }}</td><td>{{ $category->slug }}</td><td>{{ $category->is_active ? 'Active' : 'Hidden' }}</td><td class="action-row"><a class="btn-outline" href="{{ route('admin.categories.edit', $category) }}">Edit</a><form method="POST" action="{{ route('admin.categories.destroy', $category) }}">@csrf @method('DELETE')<button class="btn-outline btn-outline-danger" onclick="return confirm('Delete this category?')">Delete</button></form></td></tr>@empty<tr><td colspan="5">No categories yet.</td></tr>@endforelse</tbody></table></div></div>
+@endsection

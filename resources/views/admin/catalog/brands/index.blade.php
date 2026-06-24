@@ -1,0 +1,5 @@
+@extends('layouts.admin')
+@section('page-title', 'Brands')
+@section('content')
+<div class="admin-page-head"><div><h2 class="admin-page-title">Brands</h2><p class="admin-page-subtitle">A brand can have products in multiple categories.</p></div><a href="{{ route('admin.brands.create') }}" class="btn-primary"><i class="fas fa-plus"></i> Add Brand</a></div><div class="page-card"><div class="page-card-table"><table class="min-w-full"><thead><tr><th>Name</th><th>Slug</th><th>Products</th><th>Status</th><th></th></tr></thead><tbody>@forelse($brands as $brand)<tr><td>{{ $brand->name }}</td><td>{{ $brand->slug }}</td><td>{{ $brand->products_count }}</td><td>{{ $brand->is_active ? 'Active' : 'Hidden' }}</td><td class="action-row"><a class="btn-outline" href="{{ route('admin.brands.edit', $brand) }}">Edit</a><form method="POST" action="{{ route('admin.brands.destroy', $brand) }}">@csrf @method('DELETE')<button class="btn-outline btn-outline-danger" onclick="return confirm('Delete this brand?')">Delete</button></form></td></tr>@empty<tr><td colspan="5">No brands yet.</td></tr>@endforelse</tbody></table></div></div>
+@endsection

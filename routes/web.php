@@ -4,6 +4,8 @@ use App\Http\Controllers\Frontend\CategoryProductController;
 use App\Http\Controllers\Frontend\BrandController;
 use App\Http\Controllers\Frontend\ProductDetailController;
 use App\Http\Controllers\Frontend\CartController;
+use App\Http\Controllers\Frontend\AddressController;
+
 
 
 Route::get('/product/{product:slug}', [ProductDetailController::class, 'show'])
@@ -57,6 +59,31 @@ Route::patch('/cart/update/{key}', [CartController::class, 'update'])
 Route::delete('/cart/remove/{key}', [CartController::class, 'remove'])
     ->name('frontend.cart.remove');
  
+
+
+Route::middleware('auth')->group(function () {
+
+    Route::get('/address', [AddressController::class, 'index'])
+        ->name('frontend.address.index');
+
+    Route::get('/address/create', [AddressController::class, 'create'])
+        ->name('frontend.address.create');
+
+    Route::post('/address', [AddressController::class, 'store'])
+        ->name('frontend.address.store');
+
+    Route::get('/address/{address}/edit', [AddressController::class, 'edit'])
+        ->name('frontend.address.edit');
+
+    Route::put('/address/{address}', [AddressController::class, 'update'])
+        ->name('frontend.address.update');
+
+    Route::post('/address/{address}/select', [AddressController::class, 'select'])
+        ->name('frontend.address.select');
+
+    Route::delete('/address/{address}', [AddressController::class, 'destroy'])
+        ->name('frontend.address.destroy');
+});
 Auth::routes();
 
 Route::group(['prefix' => 'admin', 'as' => 'admin.', 'namespace' => 'Admin', 'middleware' => ['auth']], function () {
@@ -81,6 +108,19 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.', 'namespace' => 'Admin', 'mi
     Route::resource('categories', 'CategoriesController')->except('show');
     Route::resource('brands', 'BrandsController')->except('show');
     Route::resource('products', 'ProductsController')->except('show');
+
+    // User Addresses
+Route::get('user-addresses', 'UserAddressController@index')
+    ->name('user-addresses.index');
+
+Route::get('user-addresses/{address}/edit', 'UserAddressController@edit')
+    ->name('user-addresses.edit');
+
+Route::put('user-addresses/{address}', 'UserAddressController@update')
+    ->name('user-addresses.update');
+
+Route::delete('user-addresses/{address}', 'UserAddressController@destroy')
+    ->name('user-addresses.destroy');
 
     
 });

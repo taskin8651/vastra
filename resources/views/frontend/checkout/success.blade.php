@@ -260,7 +260,6 @@
 
                 <a href="{{ route('frontend.orders.show', $order) }}">
     View Details
-    
 </a>
             </div>
 

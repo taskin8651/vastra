@@ -9,6 +9,12 @@ use App\Http\Controllers\Frontend\CheckoutController;
 use App\Http\Controllers\Frontend\MyOrderController;
 use App\Http\Controllers\Frontend\ReturnRequestController;
 use App\Http\Controllers\Frontend\WishlistController;
+use App\Http\Controllers\Frontend\TrialController;
+
+Route::middleware('auth')->group(function () {
+    Route::get('/my-trials', [TrialController::class, 'index'])
+        ->name('frontend.trials.index');
+});
 
 Route::middleware('auth')->group(function () {
     Route::get('/wishlist', [WishlistController::class, 'index'])

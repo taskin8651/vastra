@@ -76,7 +76,7 @@
             <h2>Trending Now</h2>
             <a href="#top-picks">View All <i class="bi bi-arrow-right"></i></a>
           </div>
-          <div class="product-grid" id="trendingProducts"></div>
+          <div class="product-grid" id="trendingProducts" data-server-products="true">@foreach($products->take(2) as $product)<article class="product-card" data-product-card><a class="product-media" href="{{ route('storefront.product', $product) }}"><img src="{{ asset($product->image_path ?: 'assets/images/product-man.png') }}" alt="{{ $product->name }}"><button type="button" class="wishlist-btn"><i class="bi bi-heart"></i></button></a><div class="product-body"><h3 class="product-title">{{ $product->name }}</h3><span class="product-brand">{{ $product->brand->name }}</span><div class="price-row"><span class="current-price">₹{{ number_format($product->price, 0) }}</span></div></div></article>@endforeach</div>
         </div>
       </section>
 
@@ -136,7 +136,7 @@
             <h2>Top Picks For You</h2>
             <a href="#">View All <i class="bi bi-arrow-right"></i></a>
           </div>
-          <div class="product-grid top-pick-grid" id="topPickProducts"></div>
+          <div class="product-grid top-pick-grid" id="topPickProducts" data-server-products="true">@foreach($products as $product)<article class="product-card" data-product-card><a class="product-media" href="{{ route('storefront.product', $product) }}"><img src="{{ asset($product->image_path ?: 'assets/images/product-man.png') }}" alt="{{ $product->name }}"></a><div class="product-body"><h3 class="product-title">{{ $product->name }}</h3><span class="product-brand">{{ $product->brand->name }}</span><div class="price-row"><span class="current-price">₹{{ number_format($product->price, 0) }}</span></div></div></article>@endforeach</div>
         </div>
       </section>
 

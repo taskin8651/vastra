@@ -32,7 +32,7 @@
             <i class="bi bi-list"></i>
           </button>
 
-          <a href="#home" class="brand" aria-label="Vastra Express home">
+          <a href="{{ route('storefront.home') }}" class="brand" aria-label="Vastra Express home">
             <span class="brand-mark">
               <span>V</span>
             </span>
@@ -46,7 +46,7 @@
             <button class="icon-btn" type="button" aria-label="Account">
               <i class="bi bi-person"></i>
             </button>
-            <a class="icon-btn cart-button" href="cart.html" aria-label="Cart">
+            <a class="icon-btn cart-button" href="{{ url('/cart') }}" aria-label="Cart">
               <i class="bi bi-bag"></i>
               <span class="cart-count">0</span>
             </a>
@@ -54,11 +54,11 @@
         </div>
 
         <nav class="category-nav" aria-label="Primary category navigation">
-          <a class="active" href="index.html">Home</a>
-          <a href="women.html">Women</a>
-          <a href="men.html">Men</a>
-          <a href="kids.html">Kids</a>
-          <a href="accessories.html">Accessories</a>
+          <a class="{{ request()->routeIs('storefront.home') ? 'active' : '' }}" href="{{ route('storefront.home') }}">Home</a>
+          <a class="{{ request()->is('shop/women*') ? 'active' : '' }}" href="{{ url('/shop/women') }}">Women</a>
+          <a class="{{ request()->is('shop/men*') ? 'active' : '' }}" href="{{ url('/shop/men') }}">Men</a>
+          <a class="{{ request()->is('shop/kids*') ? 'active' : '' }}" href="{{ url('/shop/kids') }}">Kids</a>
+          <a class="{{ request()->is('shop/accessories*') ? 'active' : '' }}" href="{{ url('/shop/accessories') }}">Accessories</a>
         </nav>
       </div>
     </header>
@@ -68,11 +68,11 @@
     
     <!-- ================= MOBILE BOTTOM NAV ================= -->
     <nav class="bottom-nav" aria-label="Mobile bottom navigation">
-      <a class="active" href="#home"><i class="bi bi-house-door-fill"></i><span>Home</span></a>
-      <a href="#accessories"><i class="bi bi-grid-3x3-gap-fill"></i><span>Categories</span></a>
-      <a href="wishlist.html"><i class="bi bi-heart"></i><span>Wishlist</span></a>
+      <a class="active" href="{{ route('storefront.home') }}"><i class="bi bi-house-door-fill"></i><span>Home</span></a>
+      <a href="{{ url('/shop/men') }}"><i class="bi bi-grid-3x3-gap-fill"></i><span>Categories</span></a>
+      <a href="{{ url('/wishlist') }}"><i class="bi bi-heart"></i><span>Wishlist</span></a>
       <a href="#"><i class="bi bi-person"></i><span>Account</span></a>
-      <a href="orders.html"><i class="bi bi-bag"></i><span>Orders</span></a>
+      <a href="{{ url('/orders') }}"><i class="bi bi-bag"></i><span>Orders</span></a>
     </nav>
 
   </div>
@@ -81,13 +81,13 @@
   <div class="offcanvas offcanvas-start app-menu" tabindex="-1" id="mobileMenu" aria-labelledby="mobileMenuLabel">
     <div class="app-menu-top">
       <button type="button" class="app-menu-close" data-bs-dismiss="offcanvas" aria-label="Close menu"><i class="bi bi-x-lg"></i></button>
-      <a href="#home" class="app-menu-brand" data-bs-dismiss="offcanvas"><span>VE</span><b>VASTRA<span>EXPRESS</span></b></a>
+      <a href="{{ route('storefront.home') }}" class="app-menu-brand" data-bs-dismiss="offcanvas"><span>VE</span><b>VASTRA<span>EXPRESS</span></b></a>
     </div>
     <div class="offcanvas-body app-menu-body">
       <a class="app-profile" href="address.html"><span><i class="bi bi-person"></i></span><div><strong>Hello, Rahul 👋</strong><small>View Profile <i class="bi bi-chevron-right"></i></small></div></a>
       <nav class="app-menu-links" aria-label="Account navigation">
-        <a href="orders.html"><i class="bi bi-box-seam"></i><span>My Orders</span><i class="bi bi-chevron-right"></i></a>
-        <a href="wishlist.html"><i class="bi bi-heart"></i><span>My Wishlist</span><i class="bi bi-chevron-right"></i></a>
+        <a href="{{ url('/orders') }}"><i class="bi bi-box-seam"></i><span>My Orders</span><i class="bi bi-chevron-right"></i></a>
+        <a href="{{ url('/wishlist') }}"><i class="bi bi-heart"></i><span>My Wishlist</span><i class="bi bi-chevron-right"></i></a>
         <a href="my-trial.html"><i class="bi bi-box2-heart"></i><span>My Trials <b>NEW</b></span><i class="bi bi-chevron-right"></i></a>
         <a href="address.html"><i class="bi bi-geo-alt"></i><span>My Addresses</span><i class="bi bi-chevron-right"></i></a>
         <a href="payment-methods.html"><i class="bi bi-credit-card"></i><span>Payment Methods</span><i class="bi bi-chevron-right"></i></a>

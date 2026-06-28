@@ -1,10 +1,41 @@
 <?php
+use App\Http\Controllers\Frontend\AudienceController;
+use App\Http\Controllers\Frontend\CategoryProductController;
+use App\Http\Controllers\Frontend\BrandController;
+use App\Http\Controllers\Frontend\ProductDetailController;
+use App\Http\Controllers\Frontend\CartController;
 
-Route::get('/', 'StorefrontController@home')->name('storefront.home');
-Route::get('/shop/{audience:slug}', 'StorefrontController@audience')->name('storefront.audience');
-Route::get('/shop/{audience:slug}/{category:slug}', 'StorefrontController@category')->name('storefront.category');
-Route::get('/brands/{brand:slug}', 'StorefrontController@brand')->name('storefront.brand');
-Route::get('/products/{product:slug}', 'StorefrontController@product')->name('storefront.product');
+
+Route::get('/product/{product:slug}', [ProductDetailController::class, 'show'])
+    ->name('frontend.products.show');
+
+
+Route::prefix('shop')->name('frontend.')->group(function () {
+
+    // Example: /shop/men
+    Route::get('/{audience:slug}', [AudienceController::class, 'show'])
+        ->name('audience.show');
+
+    // Example: /shop/men/shirts
+    Route::get('/{audience:slug}/{category:slug}', [CategoryProductController::class, 'show'])
+        ->name('category.products');
+
+});
+
+
+Route::prefix('brands')->name('frontend.brands.')->group(function () {
+
+    Route::get('/', [BrandController::class, 'index'])
+        ->name('index');
+
+    Route::get('/{brand:slug}', [BrandController::class, 'show'])
+        ->name('show');
+
+});
+
+
+Route::get('/product/{product:slug}', [ProductDetailController::class, 'show'])
+    ->name('frontend.products.show');
 Route::get('/home', function () {
     if (session('status')) {
         return redirect()->route('admin.home')->with('status', session('status'));
@@ -12,6 +43,19 @@ Route::get('/home', function () {
 
     return redirect()->route('admin.home');
 });
+
+
+Route::get('/cart', [CartController::class, 'index'])
+    ->name('frontend.cart.index');
+
+Route::post('/cart/add/{product:slug}', [CartController::class, 'add'])
+    ->name('frontend.cart.add');
+
+Route::patch('/cart/update/{key}', [CartController::class, 'update'])
+    ->name('frontend.cart.update');
+
+Route::delete('/cart/remove/{key}', [CartController::class, 'remove'])
+    ->name('frontend.cart.remove');
  
 Auth::routes();
 

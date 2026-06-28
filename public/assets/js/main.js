@@ -90,11 +90,11 @@ function productCard(product) {
 const trendingProducts = document.querySelector("#trendingProducts");
 const topPickProducts = document.querySelector("#topPickProducts");
 
-if (trendingProducts) {
+if (trendingProducts && !trendingProducts.dataset.serverProducts) {
   trendingProducts.innerHTML = products.slice(0, 2).map(productCard).join("");
 }
 
-if (topPickProducts) {
+if (topPickProducts && !topPickProducts.dataset.serverProducts) {
   topPickProducts.innerHTML = products.map(productCard).join("");
 }
 
@@ -152,7 +152,7 @@ document.addEventListener("click", (event) => {
   }
 
   const productCardElement = event.target.closest("[data-product-card]");
-  if (productCardElement && !event.target.closest(".add-cart-btn, .wishlist-btn")) {
+  if (productCardElement && !event.target.closest("a, .add-cart-btn, .wishlist-btn")) {
     window.location.href = "product.html";
   }
 });

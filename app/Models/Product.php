@@ -13,11 +13,16 @@ class Product extends Model
     protected $fillable = [
         'category_id', 'brand_id', 'name', 'slug', 'sku', 'description', 'price',
         'compare_at_price', 'stock_quantity', 'image_path', 'is_active', 'is_featured',
+        'colour', 'available_colours', 'available_sizes', 'closure_type', 'fashion_type',
+        'hemline', 'knit_or_woven', 'product_length', 'season', 'transparency',
+        'stretchability', 'wash_care', 'fit_type', 'fabric_details', 'fabric_composition',
+        'occasion', 'pattern_type', 'sleeve_length',
     ];
 
     protected $casts = [
         'price' => 'decimal:2', 'compare_at_price' => 'decimal:2',
         'is_active' => 'boolean', 'is_featured' => 'boolean',
+        'available_colours' => 'array', 'available_sizes' => 'array',
     ];
 
     public function scopeActive($query) { return $query->where('is_active', true); }

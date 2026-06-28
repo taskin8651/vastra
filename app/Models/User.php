@@ -95,4 +95,8 @@ class User extends Authenticatable
 {
     return $this->hasMany(\App\Models\UserAddress::class);
 }
+public function wishlists()
+{
+    return $this->hasMany(\App\Models\Wishlist::class);
+}
 }

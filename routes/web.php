@@ -8,6 +8,21 @@ use App\Http\Controllers\Frontend\AddressController;
 use App\Http\Controllers\Frontend\CheckoutController;
 use App\Http\Controllers\Frontend\MyOrderController;
 use App\Http\Controllers\Frontend\ReturnRequestController;
+use App\Http\Controllers\Frontend\WishlistController;
+
+Route::middleware('auth')->group(function () {
+    Route::get('/wishlist', [WishlistController::class, 'index'])
+        ->name('frontend.wishlist.index');
+
+    Route::post('/wishlist/{product:slug}', [WishlistController::class, 'store'])
+        ->name('frontend.wishlist.store');
+
+    Route::delete('/wishlist/{product:slug}', [WishlistController::class, 'destroy'])
+        ->name('frontend.wishlist.destroy');
+
+    Route::post('/wishlist/{product:slug}/toggle', [WishlistController::class, 'toggle'])
+        ->name('frontend.wishlist.toggle');
+});
 
 Route::middleware('auth')->group(function () {
     Route::get('/my-orders/{order}/return', [ReturnRequestController::class, 'create'])

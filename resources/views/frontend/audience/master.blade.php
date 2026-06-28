@@ -89,10 +89,10 @@
                 <span>Categories</span>
             </a>
 
-            <a href="#">
-                <i class="bi bi-heart"></i>
-                <span>Wishlist</span>
-            </a>
+          <a href="{{ route('frontend.wishlist.index') }}">
+    <i class="bi bi-heart"></i>
+    <span>Wishlist</span>
+</a>
 
             <a href="#">
                 <i class="bi bi-person"></i>

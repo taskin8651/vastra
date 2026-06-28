@@ -101,9 +101,15 @@
             </a>
 
             <div>
-                <a href="#">
-                    <i class="bi bi-heart"></i>
-                </a>
+                <span>
+    <form action="{{ route('frontend.wishlist.toggle', $product) }}" method="POST">
+        @csrf
+
+        <button type="submit" class="wishlist-floating-btn">
+            <i class="bi bi-heart"></i>
+        </button>
+    </form>
+</span>
 
                 <a href="{{ url('/cart') }}">
                     <i class="bi bi-bag"></i>

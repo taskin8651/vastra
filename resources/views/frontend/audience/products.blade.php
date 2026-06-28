@@ -168,8 +168,14 @@
                     <img src="{{ $productImage }}" alt="{{ $product->name }}">
 
                     <span>
-                        <i class="bi bi-heart"></i>
-                    </span>
+    <form action="{{ route('frontend.wishlist.toggle', $product) }}" method="POST">
+        @csrf
+
+        <button type="submit" class="wishlist-floating-btn">
+            <i class="bi bi-heart"></i>
+        </button>
+    </form>
+</span>
 
                 </a>
 

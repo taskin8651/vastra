@@ -119,7 +119,9 @@
             </a>
 
             <div>
-                <i class="bi bi-heart"></i>
+                <a href="{{ route('frontend.wishlist.index') }}">
+    <i class="bi bi-heart"></i>
+</a>
                 <i class="bi bi-bag"></i>
             </div>
         </header>

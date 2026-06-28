@@ -5,7 +5,29 @@ use App\Http\Controllers\Frontend\BrandController;
 use App\Http\Controllers\Frontend\ProductDetailController;
 use App\Http\Controllers\Frontend\CartController;
 use App\Http\Controllers\Frontend\AddressController;
+use App\Http\Controllers\Frontend\CheckoutController;
+use App\Http\Controllers\Frontend\MyOrderController;
+use App\Http\Controllers\Frontend\ReturnRequestController;
 
+Route::middleware('auth')->group(function () {
+    Route::get('/my-orders/{order}/return', [ReturnRequestController::class, 'create'])
+        ->name('frontend.returns.create');
+
+    Route::post('/my-orders/{order}/return', [ReturnRequestController::class, 'store'])
+        ->name('frontend.returns.store');
+});
+
+
+Route::middleware('auth')->group(function () {
+    Route::get('/my-orders', [MyOrderController::class, 'index'])
+        ->name('frontend.orders.index');
+
+        Route::get('/my-orders/{order}', [MyOrderController::class, 'show'])
+        ->name('frontend.orders.show');
+
+    Route::patch('/my-orders/{order}/cancel', [MyOrderController::class, 'cancel'])
+        ->name('frontend.orders.cancel');
+});
 
 
 Route::get('/product/{product:slug}', [ProductDetailController::class, 'show'])
@@ -58,6 +80,8 @@ Route::patch('/cart/update/{key}', [CartController::class, 'update'])
 
 Route::delete('/cart/remove/{key}', [CartController::class, 'remove'])
     ->name('frontend.cart.remove');
+    Route::post('/cart/delivery-method', [CartController::class, 'deliveryMethod'])
+    ->name('frontend.cart.delivery-method');
  
 
 
@@ -83,7 +107,25 @@ Route::middleware('auth')->group(function () {
 
     Route::delete('/address/{address}', [AddressController::class, 'destroy'])
         ->name('frontend.address.destroy');
+
+
+        
 });
+
+
+
+
+Route::middleware('auth')->group(function () {
+    Route::get('/payment', [CheckoutController::class, 'payment'])
+        ->name('frontend.checkout.payment');
+
+    Route::post('/place-order', [CheckoutController::class, 'placeOrder'])
+        ->name('frontend.checkout.place-order');
+
+    Route::get('/order-success/{order}', [CheckoutController::class, 'success'])
+        ->name('frontend.checkout.success');
+});
+
 Auth::routes();
 
 Route::group(['prefix' => 'admin', 'as' => 'admin.', 'namespace' => 'Admin', 'middleware' => ['auth']], function () {
@@ -121,6 +163,17 @@ Route::put('user-addresses/{address}', 'UserAddressController@update')
 
 Route::delete('user-addresses/{address}', 'UserAddressController@destroy')
     ->name('user-addresses.destroy');
+
+    // Return Requests
+Route::get('return-requests', 'ReturnRequestsController@index')
+    ->name('return-requests.index');
+
+Route::get('return-requests/{returnRequest}', 'ReturnRequestsController@show')
+    ->name('return-requests.show');
+
+Route::put('return-requests/{returnRequest}/status', 'ReturnRequestsController@updateStatus')
+    ->name('return-requests.updateStatus');
+    
 
     
 });

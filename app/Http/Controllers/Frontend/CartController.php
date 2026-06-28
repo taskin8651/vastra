@@ -34,6 +34,7 @@ class CartController extends Controller
             $qty = max(1, (int) ($row['qty'] ?? 1));
 
             $price = (float) $product->price;
+
             $mrp = $product->compare_at_price
                 ? (float) $product->compare_at_price
                 : $price;
@@ -52,11 +53,21 @@ class CartController extends Controller
         })->filter()->values();
 
         $totalItems = $items->sum('qty');
+
+        // Cart empty ho to delivery method reset
+        if ($totalItems <= 0) {
+            session()->forget('delivery_method');
+        }
+
+        $deliveryMethod = session('delivery_method');
+
         $totalMrp = $items->sum('line_mrp');
         $subtotal = $items->sum('line_total');
         $discount = max(0, $totalMrp - $subtotal);
 
-        $homeTrialFee = $totalItems > 0 ? 29 : 0;
+        // Home Trial selected hoga tabhi Rs29 add hoga
+        $homeTrialFee = ($totalItems > 0 && $deliveryMethod === 'home_trial') ? 29 : 0;
+
         $platformFee = $totalItems > 0 ? 0 : 0;
         $deliveryCharge = 0;
 
@@ -71,7 +82,8 @@ class CartController extends Controller
             'homeTrialFee',
             'platformFee',
             'deliveryCharge',
-            'totalPayable'
+            'totalPayable',
+            'deliveryMethod'
         ));
     }
 
@@ -83,7 +95,9 @@ class CartController extends Controller
         $colours = is_array($product->available_colours) ? $product->available_colours : [];
 
         $size = $request->input('size') ?: ($sizes[0] ?? null);
+
         $colour = $request->input('colour') ?: ($product->colour ?: ($colours[0] ?? null));
+
         $qty = max(1, (int) $request->input('qty', 1));
 
         $key = md5($product->id . '|' . $size . '|' . $colour);
@@ -126,6 +140,11 @@ class CartController extends Controller
 
         session()->put('cart', $cart);
 
+        // Agar cart empty ho jaye to delivery method remove
+        if (count($cart) === 0) {
+            session()->forget('delivery_method');
+        }
+
         return back();
     }
 
@@ -139,6 +158,34 @@ class CartController extends Controller
 
         session()->put('cart', $cart);
 
+        // Agar cart empty ho jaye to delivery method remove
+        if (count($cart) === 0) {
+            session()->forget('delivery_method');
+        }
+
         return back();
+    }
+
+    public function deliveryMethod(Request $request)
+    {
+        $request->validate([
+            'delivery_method' => ['required', 'in:home_trial,standard'],
+        ]);
+
+        $cart = session()->get('cart', []);
+
+        if (empty($cart)) {
+            return redirect()
+                ->route('frontend.cart.index')
+                ->with('success', 'Please add products before selecting delivery.');
+        }
+
+        session([
+            'delivery_method' => $request->delivery_method,
+        ]);
+
+        return redirect()
+            ->route('frontend.cart.index')
+            ->with('success', 'Delivery option selected successfully.');
     }
 }

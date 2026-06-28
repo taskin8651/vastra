@@ -92,19 +92,19 @@ class AddressController extends Controller
     }
 
     public function select(UserAddress $address)
-    {
-        abort_if($address->user_id !== auth()->id(), 403);
+{
+    abort_if($address->user_id !== auth()->id(), 403);
 
-        auth()->user()->addresses()->update(['is_default' => false]);
+    auth()->user()->addresses()->update(['is_default' => false]);
 
-        $address->update(['is_default' => true]);
+    $address->update(['is_default' => true]);
 
-        session(['selected_address_id' => $address->id]);
+    session(['selected_address_id' => $address->id]);
 
-        return redirect()
-            ->route('frontend.address.index')
-            ->with('message', 'Address selected successfully.');
-    }
+    return redirect()
+        ->route('frontend.address.index')
+        ->with('message', 'Address selected successfully. Please continue to payment.');
+}
 
     public function destroy(UserAddress $address)
     {

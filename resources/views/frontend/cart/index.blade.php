@@ -1,6 +1,8 @@
 @php
     use Illuminate\Support\Str;
 
+    $deliveryMethod = $deliveryMethod ?? session('delivery_method');
+
     $imageUrl = function ($path, $fallback = 'assets/images/cotton-shirt.png') {
         if (! $path) {
             return asset($fallback);
@@ -35,6 +37,82 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
 
     <link rel="stylesheet" href="{{ asset('assets/css/style.css') }}">
+
+    <style>
+        .cart-qty-control {
+            display: inline-flex !important;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .cart-qty-control form {
+            display: inline-flex;
+            margin: 0;
+        }
+
+        .cart-qty-control button {
+            width: 24px;
+            height: 24px;
+            border: 0;
+            border-radius: 50%;
+            background: #111;
+            color: #fff;
+            font-size: 14px;
+            line-height: 1;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+        }
+
+        .cart-trash-btn {
+            border: 0;
+            background: transparent;
+            padding: 0;
+            color: inherit;
+            cursor: pointer;
+        }
+
+        .checkout-products article > a {
+            display: block;
+        }
+
+        .checkout-products article > a img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .delivery-card form {
+            margin-top: 12px;
+        }
+
+        .delivery-select-btn {
+            width: 100%;
+            border: 0;
+            border-radius: 14px;
+            padding: 12px 14px;
+            background: #111;
+            color: #fff;
+            font-size: 13px;
+            font-weight: 800;
+            cursor: pointer;
+            text-align: center;
+        }
+
+        .delivery-card.selected .delivery-select-btn {
+            background: #0d9f4f;
+        }
+
+        .disabled-checkout-link {
+            opacity: 0.7;
+            pointer-events: auto;
+        }
+
+        .delivery-required-alert {
+            margin: 12px 16px;
+        }
+    </style>
 </head>
 
 <body class="checkout-page">
@@ -107,10 +185,10 @@
                     @php
                         $product = $item['product'];
 
-                        $discount = null;
+                        $itemDiscount = null;
 
                         if ($item['mrp'] > $item['price']) {
-                            $discount = round((($item['mrp'] - $item['price']) / $item['mrp']) * 100);
+                            $itemDiscount = round((($item['mrp'] - $item['price']) / $item['mrp']) * 100);
                         }
 
                         $productLink = route('frontend.products.show', $product);
@@ -145,7 +223,9 @@
                                 <form action="{{ route('frontend.cart.update', $item['key']) }}" method="POST">
                                     @csrf
                                     @method('PATCH')
+
                                     <input type="hidden" name="qty" value="{{ max(0, $item['qty'] - 1) }}">
+
                                     <button type="submit">-</button>
                                 </form>
 
@@ -154,7 +234,9 @@
                                 <form action="{{ route('frontend.cart.update', $item['key']) }}" method="POST">
                                     @csrf
                                     @method('PATCH')
+
                                     <input type="hidden" name="qty" value="{{ $item['qty'] + 1 }}">
+
                                     <button type="submit">+</button>
                                 </form>
 
@@ -168,8 +250,8 @@
                                 <del>Rs{{ number_format($item['line_mrp'], 0) }}</del>
                             @endif
 
-                            @if($discount)
-                                <mark>{{ $discount }}%OFF</mark>
+                            @if($itemDiscount)
+                                <mark>{{ $itemDiscount }}%OFF</mark>
                             @endif
 
                             <form action="{{ route('frontend.cart.remove', $item['key']) }}" method="POST">
@@ -221,10 +303,11 @@
                 Home Trial is available only on <b>Online Payment</b> orders
             </p>
 
-            <section class="delivery-card selected">
+            {{-- DELIVERY OPTION: HOME TRIAL --}}
+            <section id="deliveryOptions" class="delivery-card {{ $deliveryMethod === 'home_trial' ? 'selected' : '' }}">
                 <h2>
                     Home Trial
-                    <span>Trial Fee <b>Rs{{ number_format($homeTrialFee, 0) }}</b></span>
+                    <span>Trial Fee <b>Rs29</b></span>
                 </h2>
 
                 <p>
@@ -235,10 +318,19 @@
 
                 <div>✓ If you love it, keep it and make the payment.</div>
 
-                <a href="#">✓ Select Home Trial</a>
+                <form action="{{ route('frontend.cart.delivery-method') }}" method="POST">
+                    @csrf
+
+                    <input type="hidden" name="delivery_method" value="home_trial">
+
+                    <button type="submit" class="delivery-select-btn">
+                        {{ $deliveryMethod === 'home_trial' ? '✓ Home Trial Selected' : 'Select Home Trial' }}
+                    </button>
+                </form>
             </section>
 
-            <section class="delivery-card">
+            {{-- DELIVERY OPTION: STANDARD --}}
+            <section class="delivery-card {{ $deliveryMethod === 'standard' ? 'selected' : '' }}">
                 <h2>
                     Standard Delivery
                     <span><b>No Trial Fee</b></span>
@@ -250,8 +342,23 @@
                     30 Min Easy Return &nbsp; Refund within 7 working days
                 </p>
 
-                <a href="#">Select Standard Delivery</a>
+                <form action="{{ route('frontend.cart.delivery-method') }}" method="POST">
+                    @csrf
+
+                    <input type="hidden" name="delivery_method" value="standard">
+
+                    <button type="submit" class="delivery-select-btn">
+                        {{ $deliveryMethod === 'standard' ? '✓ Standard Delivery Selected' : 'Select Standard Delivery' }}
+                    </button>
+                </form>
             </section>
+
+            @if($totalItems > 0 && ! $deliveryMethod)
+                <p class="checkout-notice delivery-required-alert">
+                    <i class="bi bi-info-circle"></i>
+                    Please select Home Trial or Standard Delivery before continuing.
+                </p>
+            @endif
 
             {{-- PRICE DETAILS --}}
             <section class="price-details">
@@ -329,9 +436,14 @@
                 <small>View Details</small>
             </div>
 
-            @if($totalItems > 0)
-                <a href="{{ url('/address') }}">
+            @if($totalItems > 0 && $deliveryMethod)
+                <a href="{{ route('frontend.address.index') }}">
                     Select Address
+                    <i class="bi bi-chevron-right"></i>
+                </a>
+            @elseif($totalItems > 0 && ! $deliveryMethod)
+                <a href="#deliveryOptions" class="disabled-checkout-link">
+                    Select Delivery First
                     <i class="bi bi-chevron-right"></i>
                 </a>
             @else
@@ -353,47 +465,3 @@
 </body>
 
 </html>
-<style>
-    .cart-qty-control {
-    display: inline-flex !important;
-    align-items: center;
-    gap: 6px;
-}
-
-.cart-qty-control form {
-    display: inline-flex;
-    margin: 0;
-}
-
-.cart-qty-control button {
-    width: 24px;
-    height: 24px;
-    border: 0;
-    border-radius: 50%;
-    background: #111;
-    color: #fff;
-    font-size: 14px;
-    line-height: 1;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-}
-
-.cart-trash-btn {
-    border: 0;
-    background: transparent;
-    padding: 0;
-    color: inherit;
-    cursor: pointer;
-}
-
-.checkout-products article > a {
-    display: block;
-}
-
-.checkout-products article > a img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-}
-</style>

@@ -6,90 +6,18 @@
 
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
-    <title>Order Success - Vastra Express</title>
+    <meta name="theme-color" content="#fff">
+
+    <title>Order Confirmed - Vastra Express</title>
+
+    <link rel="preconnect" href="https://cdn.jsdelivr.net">
 
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
 
     <link rel="stylesheet" href="{{ asset('assets/css/style.css') }}">
-
-    <style>
-        .success-box {
-            margin: 40px 16px 18px;
-            padding: 28px 18px;
-            border-radius: 24px;
-            background: #fff;
-            text-align: center;
-            box-shadow: 0 18px 45px rgba(0,0,0,.08);
-        }
-
-        .success-box i {
-            width: 72px;
-            height: 72px;
-            border-radius: 50%;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            background: #0d9f4f;
-            color: #fff;
-            font-size: 38px;
-            margin-bottom: 14px;
-        }
-
-        .success-box h1 {
-            font-size: 25px;
-            margin: 0 0 8px;
-        }
-
-        .success-box p {
-            color: #666;
-            line-height: 1.6;
-        }
-
-        .success-box a {
-            display: inline-flex;
-            margin-top: 16px;
-            padding: 13px 22px;
-            border-radius: 999px;
-            background: #111;
-            color: #fff;
-            text-decoration: none;
-            font-weight: 800;
-        }
-
-        .success-items {
-            margin: 14px 16px;
-            padding: 16px;
-            border-radius: 20px;
-            background: #fff;
-            box-shadow: 0 12px 34px rgba(0,0,0,.08);
-        }
-
-        .success-items h2 {
-            font-size: 17px;
-            margin: 0 0 12px;
-        }
-
-        .success-items article {
-            border-top: 1px solid rgba(0,0,0,.08);
-            padding: 10px 0;
-        }
-
-        .success-items article:first-of-type {
-            border-top: 0;
-        }
-
-        .success-items strong {
-            display: block;
-            font-size: 14px;
-        }
-
-        .success-items small {
-            color: #666;
-        }
-    </style>
 </head>
 
-<body class="checkout-page">
+<body class="confirmed-page">
 
     <div class="site-wrap">
 
@@ -103,10 +31,9 @@
             </span>
         </div>
 
-        <header class="checkout-header">
-            <a href="{{ url('/') }}">
-                <i class="bi bi-list"></i>
-            </a>
+        <header class="confirmed-header">
+
+            <i class="bi bi-list"></i>
 
             <a href="{{ url('/') }}" class="brand">
                 <span class="brand-mark">
@@ -118,67 +45,230 @@
                 </span>
             </a>
 
-            <div>
-                <a href="{{ route('frontend.wishlist.index') }}">
-    <i class="bi bi-heart"></i>
-</a>
-                <i class="bi bi-bag"></i>
-            </div>
+            <b>
+                <i class="bi bi-shield-check"></i>
+                100% Secure<br>Shopping
+            </b>
+
         </header>
+
+        <nav class="confirmed-steps">
+            <span>1<small>Cart</small></span>
+            <span>2<small>Address</small></span>
+            <span>3<small>Delivery</small></span>
+            <span>4<small>Payment</small></span>
+            <span>5<small>Confirmation</small></span>
+        </nav>
 
         <main>
 
-            <section class="success-box">
+            <section class="confirmed-title">
                 <i class="bi bi-check-lg"></i>
 
-                <h1>Order Placed Successfully</h1>
-
-                <p>
-                    Order Number<br>
-                    <b>{{ $order->order_number }}</b>
-                </p>
-
-                <p>
-                    Total Payable:
-                    <b>Rs{{ number_format($order->total_payable, 0) }}</b>
-                </p>
-
-                <p>
-                    Payment:
-                    <b>{{ strtoupper($order->payment_method) }}</b>
-                </p>
-
-                <p>
-                    Status:
-                    <b>{{ ucfirst(str_replace('_', ' ', $order->order_status)) }}</b>
-                </p>
-
-                <a href="{{ url('/') }}">
-                    Continue Shopping
-                </a>
-                <a href="{{ route('frontend.orders.index') }}">
-    View My Orders
-</a>    
+                <div>
+                    <h1>Order Confirmed!</h1>
+                    <p>Thank you for shopping with Vastra Express.</p>
+                </div>
             </section>
 
-            <section class="success-items">
-                <h2>Order Items</h2>
+            <section class="confirmed-alert">
+                <i class="bi bi-balloon"></i>
 
-                @foreach($order->items as $item)
+                <div>
+                    <b>Your order is confirmed and on its way!</b>
+                    <span>We'll keep you updated at every step.</span>
+                </div>
+            </section>
+
+            <section class="confirmed-summary">
+                <i class="bi bi-card-checklist"></i>
+
+                <div>
+                    <small>Order ID</small>
+
+                    <strong>{{ $order->order_number }}</strong>
+
+                    <b>{{ ucfirst(str_replace('_', ' ', $order->order_status)) }}</b>
+
+                    <span>
+                        {{ $order->created_at->format('d M Y, h:i A') }}
+                    </span>
+                </div>
+
+                <div>
+                    <p>
+                        Payment Method
+
+                        <b>
+                            {{ $order->payment_method === 'cod' ? 'Cash On Delivery' : 'Online Payment' }}
+                        </b>
+                    </p>
+
+                    <p>
+                        Payment Status
+
+                        <b class="{{ $order->payment_status === 'paid' ? 'paid' : '' }}">
+                            {{ ucfirst($order->payment_status) }}
+                        </b>
+                    </p>
+
+                    <p>
+                        Total Payable
+
+                        <b class="purple">
+                            Rs{{ number_format($order->total_payable, 0) }}
+                        </b>
+                    </p>
+                </div>
+            </section>
+
+            <section class="next-steps">
+
+                <h2>What happens next?</h2>
+
+                <article>
+                    <i class="bi bi-bag-check"></i>
+
+                    <div>
+                        <h3>Order Received</h3>
+                        <p>{{ $order->created_at->format('d M Y, h:i A') }}</p>
+                    </div>
+
+                    <b class="completed">Completed</b>
+                </article>
+
+                <article>
+                    <i class="bi bi-bag-check"></i>
+
+                    <div>
+                        <h3>Order Processing</h3>
+                        <p>Your order is being verified and packed.</p>
+                    </div>
+
+                    <b class="progress">In Progress</b>
+                </article>
+
+                @if($order->delivery_method === 'home_trial')
+
                     <article>
-                        <strong>{{ $item->product_name }}</strong>
-                        <small>
-                            {{ $item->brand_name }}
-                            |
-                            Qty: {{ $item->qty }}
-                            |
-                            Rs{{ number_format($item->line_total, 0) }}
-                        </small>
+                        <i class="bi bi-bag-check"></i>
+
+                        <div>
+                            <h3>Style Runner Assigned</h3>
+                            <p>A Style Runner will be assigned soon.</p>
+                        </div>
+
+                        <b>Upcoming</b>
                     </article>
-                @endforeach
+
+                    <article>
+                        <i class="bi bi-bag-check"></i>
+
+                        <div>
+                            <h3>Home Trial at Your Doorstep</h3>
+                            <p>Try the product at home with 15-20 minutes window.</p>
+                        </div>
+
+                        <b>Upcoming</b>
+                    </article>
+
+                    <article>
+                        <i class="bi bi-bag-check"></i>
+
+                        <div>
+                            <h3>Refund if Not Satisfied</h3>
+                            <p>Instant refund support after trial as per policy.</p>
+                        </div>
+
+                        <b>Upcoming</b>
+                    </article>
+
+                @else
+
+                    <article>
+                        <i class="bi bi-bag-check"></i>
+
+                        <div>
+                            <h3>Order Packed</h3>
+                            <p>Your product will be packed and ready for delivery.</p>
+                        </div>
+
+                        <b>Upcoming</b>
+                    </article>
+
+                    <article>
+                        <i class="bi bi-bag-check"></i>
+
+                        <div>
+                            <h3>Out For Delivery</h3>
+                            <p>You will receive delivery updates soon.</p>
+                        </div>
+
+                        <b>Upcoming</b>
+                    </article>
+
+                @endif
+
+            </section>
+
+            @if($order->delivery_method === 'home_trial')
+                <section class="about-trial">
+                    <i class="bi bi-house-heart"></i>
+
+                    <div>
+                        <h2>About Home Trial</h2>
+
+                        <p>◉ Style Runner will reach in 60 minutes</p>
+                        <p>◉ Try the product at home with the Style Runner</p>
+                        <p>◉ Not satisfied? Get instant refund support</p>
+                        <p>◉ Rs{{ number_format($order->home_trial_fee, 0) }} Trial Fee is non-refundable</p>
+                    </div>
+                </section>
+            @else
+                <section class="about-trial">
+                    <i class="bi bi-truck"></i>
+
+                    <div>
+                        <h2>About Standard Delivery</h2>
+
+                        <p>◉ Your order will be packed and shipped soon</p>
+                        <p>◉ Cash on Delivery is available</p>
+                        <p>◉ Easy return as per store policy</p>
+                        <p>◉ Delivery charge: {{ $order->delivery_charge > 0 ? 'Rs' . number_format($order->delivery_charge, 0) : 'FREE' }}</p>
+                    </div>
+                </section>
+            @endif
+
+            <section class="confirmed-help">
+                <i class="bi bi-headset"></i>
+
+                <div>
+                    <h2>Need Help?</h2>
+                    <p>Our support team is here for you.</p>
+                </div>
+
+                <a href="{{ url('/support') }}">Chat with Us</a>
+                <a href="{{ url('/contact') }}">Call Us</a>
             </section>
 
         </main>
+
+        <footer class="confirmed-bottom">
+
+            <div>
+                <strong>Rs{{ number_format($order->total_payable, 0) }}</strong>
+
+                <a href="{{ route('frontend.orders.show', $order) }}">
+    View Details
+    
+</a>
+            </div>
+
+            <a href="{{ url('/') }}">
+                Continue Shopping 
+            </a>
+
+        </footer>
 
     </div>
 

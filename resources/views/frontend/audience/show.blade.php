@@ -121,7 +121,7 @@
         </section>
     @endif
 
-    <a class="all-categories-link" href="{{ url('/') }}">
+    <a class="all-categories-link" href="{{ route('frontend.categories.index') }}">
         <i class="bi bi-grid-3x3-gap-fill"></i>
         View All Categories
     </a>

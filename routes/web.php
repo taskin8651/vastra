@@ -10,7 +10,11 @@ use App\Http\Controllers\Frontend\MyOrderController;
 use App\Http\Controllers\Frontend\ReturnRequestController;
 use App\Http\Controllers\Frontend\WishlistController;
 use App\Http\Controllers\Frontend\TrialController;
+use App\Http\Controllers\Frontend\HomeController;
 
+Route::get('/', [HomeController::class, 'index'])->name('frontend.home');
+Route::view('/support', 'frontend.support')->name('frontend.support');
+Route::get('/categories', 'Frontend\CategoryController@index')->name('frontend.categories.index');
 Route::middleware('auth')->group(function () {
     Route::get('/my-trials', [TrialController::class, 'index'])
         ->name('frontend.trials.index');

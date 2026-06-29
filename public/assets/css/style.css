@@ -719,44 +719,95 @@ img {
 
 /* Brands */
 .brands-section {
-  padding-top: 96px;
+  padding-top: 48px;
 }
 
 .brand-grid {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
-  gap: 12px 14px;
+  gap: 12px 10px;
+  justify-items: center;
 }
 
 .brand-chip {
-  aspect-ratio: 1;
+  width: 66px;
+  height: 66px;
+  aspect-ratio: 1 / 1;
   display: grid;
   place-items: center;
   border-radius: 50%;
   border: 1px solid #f0dff4;
   background: #fff;
   font-weight: 800;
-  letter-spacing: -.6px;
-  box-shadow: 0 2px 6px rgba(31, 33, 44, .03);
+  letter-spacing: -.4px;
+  text-decoration: none;
+  box-shadow: 0 2px 6px rgba(31, 33, 44, .05);
+  overflow: hidden;
+  white-space: nowrap;
 }
 
 .brand-chip.hm {
   color: #e51543;
   font-family: Georgia, serif;
   font-style: italic;
-  font-size: clamp(18px, 6vw, 27px);
+  font-size: 18px;
 }
 
 .brand-chip.zara {
   color: #111;
   font-family: Georgia, serif;
-  font-size: clamp(14px, 4.5vw, 21px);
-  letter-spacing: -2px;
+  font-size: 15px;
+  letter-spacing: -1.2px;
 }
 
 .brand-chip.puma {
   color: #111;
-  font-size: clamp(9px, 2.8vw, 12px);
+  font-size: 10px;
+}
+
+/* agar dynamic brand class hm/zara/puma na ho */
+.brand-chip:not(.hm):not(.zara):not(.puma) {
+  color: #111;
+  font-size: 11px;
+  padding: 6px;
+  text-align: center;
+  line-height: 1.1;
+}
+
+/* mobile */
+@media (max-width: 575px) {
+  .brands-section {
+    padding-top: 42px;
+  }
+
+  .brand-grid {
+    gap: 10px 8px;
+  }
+
+  .brand-chip {
+    width: 60px;
+    height: 60px;
+  }
+
+  .brand-chip.hm {
+    font-size: 16px;
+  }
+
+  .brand-chip.zara {
+    font-size: 14px;
+  }
+
+  .brand-chip.puma {
+    font-size: 9px;
+  }
+}
+
+/* tablet / desktop par bhi bada nahi hoga */
+@media (min-width: 768px) {
+  .brand-chip {
+    width: 72px;
+    height: 72px;
+  }
 }
 
 .final-trust {

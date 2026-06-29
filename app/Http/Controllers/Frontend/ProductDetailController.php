@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Frontend;
 
 use App\Http\Controllers\Controller;
 use App\Models\Product;
+use App\Models\Wishlist;
 
 class ProductDetailController extends Controller
 {
@@ -25,6 +26,13 @@ class ProductDetailController extends Controller
             ->take(6)
             ->get();
 
-        return view('frontend.products.show', compact('product', 'relatedProducts'));
+        $isWishlisted = auth()->check()
+            ? Wishlist::query()
+                ->where('user_id', auth()->id())
+                ->where('product_id', $product->id)
+                ->exists()
+            : false;
+
+        return view('frontend.products.show', compact('product', 'relatedProducts', 'isWishlisted'));
     }
 }

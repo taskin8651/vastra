@@ -117,6 +117,13 @@ class CartController extends Controller
 
         session()->put('cart', $cart);
 
+        if ($request->expectsJson()) {
+            return response()->json([
+                'message' => 'Product added to cart.',
+                'cart_count' => collect($cart)->sum('qty'),
+            ]);
+        }
+
         return redirect()
             ->route('frontend.cart.index')
             ->with('success', 'Product added to bag successfully.');

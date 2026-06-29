@@ -93,7 +93,7 @@
         <a href="{{ route('frontend.checkout.payment') }}"><i class="bi bi-credit-card"></i><span>Payment Methods</span><i class="bi bi-chevron-right"></i></a>
         <a href="{{ route('frontend.checkout.payment') }}"><i class="bi bi-wallet2"></i><span>VE Wallet <b>₹250</b></span><i class="bi bi-chevron-right"></i></a>
         <a href="{{ route('frontend.home') }}#top-picks"><i class="bi bi-people"></i><span>Refer &amp; Earn</span><i class="bi bi-chevron-right"></i></a>
-        <a href="{{ route('frontend.categories.index') }}"><i class="bi bi-rulers"></i><span>Size Guide</span><i class="bi bi-chevron-right"></i></a>
+        <a href="{{ route('frontend.size-guide') }}"><i class="bi bi-rulers"></i><span>Size Guide</span><i class="bi bi-chevron-right"></i></a>
         <a href="{{ route('frontend.support') }}"><i class="bi bi-headset"></i><span>Customer Support</span><i class="bi bi-chevron-right"></i></a>
         <a href="{{ route('frontend.home') }}#home"><i class="bi bi-info-circle"></i><span>About Us</span><i class="bi bi-chevron-right"></i></a>
         <a href="{{ route('frontend.support') }}"><i class="bi bi-file-earmark-text"></i><span>Terms &amp; Conditions</span><i class="bi bi-chevron-right"></i></a>
@@ -119,7 +119,7 @@
         <div class="modal-body pt-0">
           <div class="input-group">
             <span class="input-group-text bg-white"><i class="bi bi-search"></i></span>
-            <input type="search" class="form-control" id="productSearch" placeholder="Search shirts, bags, shoes...">
+            <input type="search" class="form-control" id="productSearch" data-search-url="{{ route('frontend.search') }}" value="{{ request('q') }}" placeholder="Search shirts, bags, shoes...">
           </div>
           <div class="search-suggestions">
             <span>Popular:</span>

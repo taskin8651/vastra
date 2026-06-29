@@ -2236,7 +2236,7 @@ img {
 .shirts-brand-row h1 { display: inline-block; margin: 0; color: #162a4d; font-size: 16px; font-weight: 800; }
 .shirts-brand-row > a { float: right; color: #d268df; font-size: 11px; }
 .shirts-brand-logos { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; clear: both; padding-top: 19px; }
-.shirts-brand-logos span { aspect-ratio: 1; display: grid; place-items: center; border: 1px solid #f2dcf7; border-radius: 50%; }
+.shirts-brand-logos span,.shirts-brand-logos a { aspect-ratio: 1; display: grid; place-items: center; border: 1px solid #f2dcf7; border-radius: 50%; color: inherit; text-decoration: none; }
 .shirts-brand-logos .hm-logo { font-size: 23px !important; }
 .shirts-brand-logos .zara-logo { font-size: 15px !important; }
 .shirts-brand-logos .puma-logo { font-size: 8px !important; }
@@ -2323,8 +2323,112 @@ img {
 /* ===== REFER AND SIZE GUIDE PAGES CSS START ===== */
 .refer-page,.size-page { background:#fff; padding-bottom:30px; }.refer-page .site-wrap,.size-page .site-wrap { background:#fff; min-height:100vh; }.refer-page main { padding:0 21px 35px; }.refer-banner { width:100%; border-radius:17px; display:block; }.refer-page main > h2 { margin:31px 0 21px; color:#303848; font-size:16px; }.refer-steps { display:grid; gap:27px; }.refer-steps article { position:relative; display:flex; gap:21px; align-items:center; }.refer-steps article:not(:last-child)::after { content:""; position:absolute; top:48px; left:20px; width:2px; height:45px; background:#c55fdf; }.refer-steps b { width:42px; height:42px; display:grid; place-items:center; border-radius:50%; background:#f5e0ff; color:#c55fdf; font-size:20px; }.refer-steps h3 { margin:0 0 8px; font-size:19px; font-weight:500; }.refer-steps p { margin:0; font-size:14px; }.refer-code { position:relative; min-height:100px; margin-top:18px; padding:18px 24px; border-radius:14px; background:#fdf2ff; }.refer-code p { margin:0 0 12px; font-size:14px; }.refer-code strong { display:block; max-width:245px; font-size:19px; overflow:hidden; white-space:nowrap; }.refer-code + .refer-code strong { color:#c55fdf; font-size:13px; }.refer-code i { position:absolute; top:40px; right:25px; color:#c55fdf; font-size:30px; }.refer-share { min-height:52px; display:grid; place-items:center; margin:18px 8px; border-radius:5px; background:#c55fdf; color:#fff; font-size:17px; }.size-page main { padding:0 21px; }.size-tabs,.unit-tabs { display:grid; gap:34px; }.size-tabs { grid-template-columns:repeat(3,1fr); margin:0 0 27px; }.unit-tabs { grid-template-columns:repeat(2,1fr); margin-bottom:28px; }.size-tabs > *, .unit-tabs > * { min-height:53px; display:grid; place-items:center; border:1px solid #e5e7ee; border-radius:13px; color:#2e3137; font-size:18px; font-weight:500; }.size-tabs b { border:0; background:#c55fdf; color:#fff; }.unit-tabs b { border:0; background:#5010df; color:#fff; }.size-page main > h2 { margin:0 0 20px; font-size:16px; }.size-page table { width:100%; border-collapse:collapse; border:1px solid #e8e8e9; font-size:16px; text-align:center; }.size-page th,.size-page td { height:49px; border-bottom:1px solid #e8e8e9; font-weight:400; }.size-page th { font-weight:500; }.size-expand { display:flex; justify-content:space-between; align-items:center; min-height:89px; color:#273043; font-size:22px; font-weight:600; }.size-expand i { color:#05070b; font-size:25px; }
 /* ===== REFER AND SIZE GUIDE PAGES CSS END ===== */
+.size-expand { cursor:pointer; }
+.size-panel { padding-bottom:20px; }
+
+.wishlist-floating-btn,
+.wishlist-card-form button {
+  width:100%;
+  height:100%;
+  display:grid;
+  place-items:center;
+  padding:0;
+  border:0;
+  background:transparent;
+  color:inherit;
+  font:inherit;
+  line-height:1;
+  cursor:pointer;
+}
+.wishlist-floating-btn.active,
+.wishlist-card-form button.active,
+.wishlist-btn.active {
+  color:#ef3f79;
+}
+.wishlist-card-form {
+  position:absolute;
+  top:12px;
+  right:10px;
+  width:37px;
+  height:37px;
+  display:grid;
+  place-items:center;
+  border-radius:9px;
+  background:#fff;
+  color:#29313e;
+  font-size:21px;
+}
+.zara-product {
+  position:relative;
+}
+.shirt-product-image > a {
+  width:100%;
+  height:100%;
+  display:block;
+}
+.product-full-header > div span {
+  width:22px;
+  height:22px;
+  display:grid;
+  place-items:center;
+  color:#17233a;
+  font-size:22px;
+}
+.product-main-photo span form,
+.shirt-product-image span form,
+.product-full-header form {
+  width:100%;
+  height:100%;
+}
+.product-size-alert {
+  display:block;
+  margin-top:10px;
+  color:#f02738;
+  font-size:12px;
+  font-weight:600;
+}
+.product-size-alert[hidden] {
+  display:none;
+}
+.product-sizes span {
+  cursor:pointer;
+}
+.product-review-list {
+  display:grid;
+  gap:10px;
+  margin-top:14px;
+}
+.product-review-list article {
+  padding:12px;
+  border:1px solid #ececf0;
+  border-radius:7px;
+}
+.product-review-list article strong {
+  display:inline-block;
+  margin-bottom:7px;
+  color:#c55fdf;
+  font-size:12px;
+}
+.product-review-list article p {
+  margin:0 0 7px;
+  color:#292d35;
+  font-size:11px;
+  line-height:1.5;
+}
+.product-review-list article small {
+  color:#999ba1;
+  font-size:10px;
+}
 
 /* ===== CUSTOMER SUPPORT PAGE CSS START (support.html) ===== */
+#cartToast { display:none; min-width:240px; padding:0; border-radius:6px; background:#212529; color:#fff; box-shadow:0 12px 28px rgba(0,0,0,.18); opacity:0; transition:opacity .18s ease; }
+#cartToast.show { display:block; opacity:1; }
+#cartToast .d-flex { display:flex; align-items:center; }
+#cartToast .toast-body { flex:1; padding:12px 14px; }
+#cartToast .btn-close { width:34px; height:34px; border:0; background:transparent; color:#fff; font-size:18px; cursor:pointer; }
+#cartToast .btn-close::before { content:"x"; }
+.toast-container.position-fixed.end-0.p-3 { position:fixed; z-index:1080; right:0; bottom:0; padding:16px; }
+
 .support-page { background:#fff; padding-bottom:30px; }.support-page .site-wrap { min-height:100vh; background:#fff; }.support-page main { padding:38px 21px 30px; }.support-page main > h2 { margin:0 0 23px; font-size:20px; }.support-list { display:grid; }.support-list a { display:flex; align-items:center; gap:18px; min-height:65px; border-bottom:1px solid #eeeeef; color:#c12eff; font-size:18px; }.support-list a > i { font-size:29px; }.support-list a > b { margin-left:auto; color:#080a0e; font-size:25px; }.support-chat { position:relative; margin-top:23px; padding:22px 28px; border:1px solid #c85ee0; border-radius:9px; background:#fdf2ff; }.support-chat p { margin:0 0 18px; color:#c12eff; font-size:16px; }.support-chat h3 { margin:0 0 9px; font-size:17px; }.support-chat span { font-size:13px; }.support-chat > i { position:absolute; right:30px; top:45px; color:#c55fdf; font-size:61px; }.support-call { position:relative; margin-top:18px; padding:18px 21px; border-radius:14px; box-shadow:0 6px 17px rgba(20,22,30,.08); }.support-call h3 { margin:0 0 17px; font-size:15px; }.support-call strong { font-size:13px; }.support-call p { margin:8px 0 0; color:#999a9e; font-size:14px; font-weight:600; }.support-call > i { position:absolute; right:25px; bottom:24px; color:#c55fdf; font-size:29px; }
 /* ===== CUSTOMER SUPPORT PAGE CSS END ===== */
 

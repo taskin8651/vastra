@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Audience;
 use App\Models\Brand;
 use App\Models\Product;
+use App\Models\Wishlist;
 use Illuminate\Http\Request;
 
 class BrandController extends Controller
@@ -79,10 +80,20 @@ class BrandController extends Controller
             })
             ->paginate(12);
 
+        $wishlistProductIds = [];
+
+        if (auth()->check()) {
+            $wishlistProductIds = Wishlist::query()
+                ->where('user_id', auth()->id())
+                ->pluck('product_id')
+                ->toArray();
+        }
+
         return view('frontend.brands.show', compact(
             'brand',
             'products',
-            'audiences'
+            'audiences',
+            'wishlistProductIds'
         ));
     }
 }

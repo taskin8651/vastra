@@ -56,6 +56,13 @@ class WishlistController extends Controller
         if ($wishlist) {
             $wishlist->delete();
 
+            if (request()->expectsJson()) {
+                return response()->json([
+                    'message' => 'Product removed from wishlist.',
+                    'wishlisted' => false,
+                ]);
+            }
+
             return back()->with('success', 'Product removed from wishlist.');
         }
 
@@ -63,6 +70,13 @@ class WishlistController extends Controller
             'user_id' => auth()->id(),
             'product_id' => $product->id,
         ]);
+
+        if (request()->expectsJson()) {
+            return response()->json([
+                'message' => 'Product added to wishlist.',
+                'wishlisted' => true,
+            ]);
+        }
 
         return back()->with('success', 'Product added to wishlist.');
     }

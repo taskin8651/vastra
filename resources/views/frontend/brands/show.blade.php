@@ -71,7 +71,9 @@
 
     <form action="{{ route('frontend.brands.show', $brand) }}" method="GET" class="zara-search">
 
-        <i class="bi bi-search"></i>
+        <button type="submit" aria-label="Search" style="border:0;background:transparent;padding:0;color:inherit;">
+            <i class="bi bi-search"></i>
+        </button>
 
         <input type="text"
                name="q"
@@ -170,14 +172,22 @@
                 $colours = is_array($product->available_colours)
                     ? array_slice($product->available_colours, 0, 3)
                     : [];
+
+                $isWishlisted = in_array($product->id, $wishlistProductIds ?? []);
             @endphp
 
             <article class="zara-product">
 
                 <a href="{{ route('frontend.products.show', $product) }}">
                     <img src="{{ $imageUrl($product->image_path) }}" alt="{{ $product->name }}">
-                    <i class="bi bi-heart"></i>
                 </a>
+
+                <form action="{{ route('frontend.wishlist.toggle', $product) }}" method="POST" data-wishlist-toggle data-wishlist-product="{{ $product->id }}" class="wishlist-card-form">
+                    @csrf
+                    <button type="submit" class="wishlist-floating-btn {{ $isWishlisted ? 'active' : '' }}" aria-label="Toggle {{ $product->name }} wishlist">
+                        <i class="bi {{ $isWishlisted ? 'bi-heart-fill' : 'bi-heart' }}"></i>
+                    </button>
+                </form>
 
                 <div>
 

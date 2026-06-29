@@ -46,10 +46,11 @@
 
     {{-- SEARCH BAR --}}
     <div class="shirt-search">
-        <i class="bi bi-search"></i>
+        <i class="bi bi-search" onclick="document.getElementById('categoryProductSearchForm')?.requestSubmit()" style="cursor:pointer;"></i>
 
         <form action="{{ route('frontend.category.products', [$audience, $category]) }}"
               method="GET"
+              id="categoryProductSearchForm"
               style="width:100%; display:flex; align-items:center; gap:8px;">
 
             <input type="text"
@@ -111,7 +112,7 @@
 
         <h1>BEST OF BRANDS</h1>
 
-        <a href="#">
+        <a href="{{ route('frontend.brands.index') }}">
             View All <i class="bi bi-arrow-right"></i>
         </a>
 
@@ -124,16 +125,16 @@
                     $brandClass = Str::slug($brand->name) . '-logo';
                 @endphp
 
-                <span class="{{ $brandClass }}">
+                <a href="{{ route('frontend.brands.show', $brand) }}" class="{{ $brandClass }}">
                     {{ $brandName }}
-                </span>
+                </a>
 
             @empty
 
-                <span class="hm-logo">H&amp;M</span>
-                <span class="zara-logo">ZARA</span>
-                <span class="puma-logo">PUMA</span>
-                <span class="hm-logo">H&amp;M</span>
+                <a href="{{ route('frontend.brands.index') }}" class="hm-logo">H&amp;M</a>
+                <a href="{{ route('frontend.brands.index') }}" class="zara-logo">ZARA</a>
+                <a href="{{ route('frontend.brands.index') }}" class="puma-logo">PUMA</a>
+                <a href="{{ route('frontend.brands.index') }}" class="hm-logo">H&amp;M</a>
 
             @endforelse
 
@@ -159,25 +160,29 @@
                 $colours = is_array($product->available_colours)
                     ? array_slice($product->available_colours, 0, 3)
                     : [];
+
+                $isWishlisted = in_array($product->id, $wishlistProductIds ?? []);
             @endphp
 
             <article class="shirt-product-card">
 
-                <a href="{{ route('frontend.products.show', $product) }}" class="shirt-product-image">
+                <div class="shirt-product-image">
 
-                    <img src="{{ $productImage }}" alt="{{ $product->name }}">
+                    <a href="{{ route('frontend.products.show', $product) }}">
+                        <img src="{{ $productImage }}" alt="{{ $product->name }}">
+                    </a>
 
                     <span>
-    <form action="{{ route('frontend.wishlist.toggle', $product) }}" method="POST">
-        @csrf
+                        <form action="{{ route('frontend.wishlist.toggle', $product) }}" method="POST" data-wishlist-toggle data-wishlist-product="{{ $product->id }}">
+                            @csrf
 
-        <button type="submit" class="wishlist-floating-btn">
-            <i class="bi bi-heart"></i>
-        </button>
-    </form>
-</span>
+                            <button type="submit" class="wishlist-floating-btn {{ $isWishlisted ? 'active' : '' }}" aria-label="Toggle {{ $product->name }} wishlist">
+                                <i class="bi {{ $isWishlisted ? 'bi-heart-fill' : 'bi-heart' }}"></i>
+                            </button>
+                        </form>
+                    </span>
 
-                </a>
+                </div>
 
                 <div>
 

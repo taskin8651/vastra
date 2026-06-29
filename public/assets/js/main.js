@@ -101,15 +101,53 @@ if (topPickProducts && !topPickProducts.dataset.serverProducts) {
 let cartItems = 0;
 const cartCount = document.querySelector(".cart-count");
 const toastElement = document.querySelector("#cartToast");
-const cartToast = toastElement ? new bootstrap.Toast(toastElement, { delay: 1800 }) : null;
+const cartToast = toastElement && window.bootstrap ? new bootstrap.Toast(toastElement, { delay: 1800 }) : null;
+
+function showCartToast(message = "Product added to cart.") {
+  if (!toastElement) {
+    return;
+  }
+
+  const toastBody = toastElement.querySelector(".toast-body");
+  if (toastBody) {
+    toastBody.textContent = message;
+  }
+
+  if (cartToast) {
+    cartToast.show();
+    return;
+  }
+
+  toastElement.classList.add("show");
+  toastElement.style.display = "block";
+  clearTimeout(toastElement._hideTimer);
+  toastElement._hideTimer = setTimeout(() => {
+    toastElement.classList.remove("show");
+    toastElement.style.display = "none";
+  }, 1800);
+}
+
+toastElement?.querySelector("[data-bs-dismiss='toast']")?.addEventListener("click", () => {
+  if (cartToast) {
+    cartToast.hide();
+    return;
+  }
+
+  toastElement.classList.remove("show");
+  toastElement.style.display = "none";
+});
+
+function setCartCount(count) {
+  document.querySelectorAll(".cart-count").forEach((countElement) => {
+    countElement.textContent = count;
+    countElement.classList.toggle("show", Number(count) > 0);
+  });
+}
 
 function updateCartCount() {
   const savedCart = JSON.parse(localStorage.getItem("vastra-cart") || "[]");
   cartItems = savedCart.reduce((total, item) => total + item.quantity, 0);
-  if (cartCount) {
-    cartCount.textContent = cartItems;
-    cartCount.classList.toggle("show", cartItems > 0);
-  }
+  setCartCount(cartItems);
 }
 
 function addProductToCart() {
@@ -128,7 +166,7 @@ updateCartCount();
 
 document.addEventListener("click", (event) => {
   const wishlistButton = event.target.closest(".wishlist-btn");
-  if (wishlistButton) {
+  if (wishlistButton && !wishlistButton.closest("[data-wishlist-toggle]")) {
     wishlistButton.classList.toggle("active");
     const icon = wishlistButton.querySelector("i");
     icon.classList.toggle("bi-heart");
@@ -137,6 +175,11 @@ document.addEventListener("click", (event) => {
 
   const cartButton = event.target.closest(".add-cart-btn");
   if (cartButton) {
+    const cartForm = cartButton.closest("form");
+    if (cartForm && isCartAddForm(cartForm)) {
+      return;
+    }
+
     addProductToCart();
 
     const originalText = cartButton.innerHTML;
@@ -148,12 +191,155 @@ document.addEventListener("click", (event) => {
       cartButton.disabled = false;
     }, 1100);
 
-    cartToast?.show();
+    showCartToast();
   }
 
   const productCardElement = event.target.closest("[data-product-card]");
-  if (productCardElement && !event.target.closest("a, .add-cart-btn, .wishlist-btn")) {
-    window.location.href = "product.html";
+  if (productCardElement && !event.target.closest("a, .add-cart-btn, .wishlist-btn, [data-wishlist-toggle]")) {
+    const productUrl = productCardElement.dataset.productUrl || productCardElement.querySelector("a")?.href || "product.html";
+    window.location.href = productUrl;
+  }
+});
+
+function isCartAddForm(form) {
+  return form.action && form.action.includes("/cart/add/");
+}
+
+document.addEventListener("submit", async (event) => {
+  const form = event.target;
+
+  if (event.defaultPrevented) {
+    return;
+  }
+
+  if (!(form instanceof HTMLFormElement) || !isCartAddForm(form)) {
+    return;
+  }
+
+  event.preventDefault();
+
+  const submitButton = event.submitter || form.querySelector("button[type='submit'], .add-cart-btn, .shirt-add, .wishlist-bag-btn");
+  const originalButtonHtml = submitButton ? submitButton.innerHTML : "";
+
+  if (submitButton) {
+    submitButton.disabled = true;
+    submitButton.innerHTML = '<i class="bi bi-check2"></i> Added';
+  }
+
+  try {
+    const response = await fetch(form.action, {
+      method: "POST",
+      headers: {
+        "Accept": "application/json",
+        "X-Requested-With": "XMLHttpRequest"
+      },
+      body: new FormData(form)
+    });
+
+    if (!response.ok) {
+      throw new Error("Cart request failed");
+    }
+
+    const data = await response.json();
+
+    if (typeof data.cart_count !== "undefined") {
+      setCartCount(data.cart_count);
+    }
+
+    showCartToast(data.message || "Product added to cart.");
+  } catch (error) {
+    form.submit();
+    return;
+  } finally {
+    if (submitButton) {
+      setTimeout(() => {
+        submitButton.innerHTML = originalButtonHtml;
+        submitButton.disabled = false;
+      }, 900);
+    }
+  }
+});
+
+function setWishlistButtonState(button, wishlisted) {
+  const icon = button.querySelector("i");
+
+  button.classList.toggle("active", wishlisted);
+
+  if (icon) {
+    icon.classList.toggle("bi-heart", !wishlisted);
+    icon.classList.toggle("bi-heart-fill", wishlisted);
+  }
+}
+
+function setWishlistProductState(form, wishlisted) {
+  const productId = form.dataset.wishlistProduct;
+  const forms = productId
+    ? document.querySelectorAll(`[data-wishlist-toggle][data-wishlist-product="${productId}"]`)
+    : [form];
+
+  forms.forEach((wishlistForm) => {
+    const button = wishlistForm.querySelector("button");
+    if (button) {
+      setWishlistButtonState(button, wishlisted);
+    }
+  });
+}
+
+document.addEventListener("click", (event) => {
+  const wishlistButton = event.target.closest("[data-wishlist-toggle] button");
+
+  if (wishlistButton) {
+    event.stopPropagation();
+  }
+});
+
+document.addEventListener("submit", async (event) => {
+  const form = event.target;
+
+  if (!(form instanceof HTMLFormElement) || !form.matches("[data-wishlist-toggle]")) {
+    return;
+  }
+
+  event.preventDefault();
+
+  const button = form.querySelector("button");
+  const wasActive = button?.classList.contains("active") || false;
+
+  if (button) {
+    setWishlistProductState(form, !wasActive);
+    button.disabled = true;
+  }
+
+  try {
+    const response = await fetch(form.action, {
+      method: "POST",
+      headers: {
+        "Accept": "application/json",
+        "X-Requested-With": "XMLHttpRequest"
+      },
+      body: new FormData(form)
+    });
+
+    if (!response.ok) {
+      throw new Error("Wishlist request failed");
+    }
+
+    const data = await response.json();
+
+    if (button) {
+      setWishlistProductState(form, Boolean(data.wishlisted));
+    }
+  } catch (error) {
+    if (button) {
+      setWishlistProductState(form, wasActive);
+    }
+
+    form.submit();
+    return;
+  } finally {
+    if (button) {
+      button.disabled = false;
+    }
   }
 });
 
@@ -176,7 +362,38 @@ document.querySelectorAll(".search-suggestions button").forEach((button) => {
     const searchInput = document.querySelector("#productSearch");
     if (searchInput) {
       searchInput.value = button.textContent.trim();
-      searchInput.focus();
+      submitProductSearch(searchInput);
+    }
+  });
+});
+
+function submitProductSearch(searchInput) {
+  const query = searchInput.value.trim();
+  const searchUrl = searchInput.dataset.searchUrl || "/search";
+
+  if (!query) {
+    searchInput.focus();
+    return;
+  }
+
+  window.location.href = `${searchUrl}?q=${encodeURIComponent(query)}`;
+}
+
+document.querySelectorAll("#productSearch").forEach((searchInput) => {
+  searchInput.addEventListener("keydown", (event) => {
+    if (event.key === "Enter") {
+      event.preventDefault();
+      submitProductSearch(searchInput);
+    }
+  });
+});
+
+document.querySelectorAll(".search-modal .input-group-text").forEach((searchIcon) => {
+  searchIcon.addEventListener("click", () => {
+    const searchInput = searchIcon.closest(".input-group")?.querySelector("#productSearch");
+
+    if (searchInput) {
+      submitProductSearch(searchInput);
     }
   });
 });

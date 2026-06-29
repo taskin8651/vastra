@@ -57,7 +57,7 @@
 
             <div class="header-actions">
 
-                <a class="icon-btn" href="{{ url('/') }}">
+                <a class="icon-btn" href="{{ route('frontend.search') }}" aria-label="Search">
                     <i class="bi bi-search"></i>
                 </a>
 
@@ -108,6 +108,16 @@
 
     </div>
 
+    <div class="toast-container position-fixed end-0 p-3">
+        <div id="cartToast" class="toast align-items-center text-bg-dark border-0" role="status" aria-live="polite" aria-atomic="true">
+            <div class="d-flex">
+                <div class="toast-body">Product added to cart.</div>
+                <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+            </div>
+        </div>
+    </div>
+
+    <script src="{{ asset('assets/js/main.js') }}"></script>
 </body>
 
 </html>

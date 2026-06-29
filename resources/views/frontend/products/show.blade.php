@@ -39,6 +39,19 @@
         $discount = round((($product->compare_at_price - $product->price) / $product->compare_at_price) * 100);
     }
 
+    $reviews = collect($reviews ?? []);
+    $reviewCount = $reviews->count();
+    $reviewAverage = $reviewCount
+        ? round($reviews->avg(fn ($review) => (float) data_get($review, 'rating', 0)), 1)
+        : null;
+    $reviewPhotos = $reviews
+        ->map(fn ($review) => data_get($review, 'image_path') ?: data_get($review, 'photo_path'))
+        ->filter()
+        ->take(4)
+        ->values();
+    $ratingBreakdown = collect([5, 4, 3, 2, 1])
+        ->mapWithKeys(fn ($rating) => [$rating => $reviews->where('rating', $rating)->count()]);
+
     $backUrl = '#';
 
     if ($product->category && $product->category->audience) {
@@ -102,14 +115,14 @@
 
             <div>
                 <span>
-    <form action="{{ route('frontend.wishlist.toggle', $product) }}" method="POST">
-        @csrf
+                    <form action="{{ route('frontend.wishlist.toggle', $product) }}" method="POST" data-wishlist-toggle data-wishlist-product="{{ $product->id }}">
+                        @csrf
 
-        <button type="submit" class="wishlist-floating-btn">
-            <i class="bi bi-heart"></i>
-        </button>
-    </form>
-</span>
+                        <button type="submit" class="wishlist-floating-btn {{ $isWishlisted ? 'active' : '' }}" aria-label="Toggle {{ $product->name }} wishlist">
+                            <i class="bi {{ $isWishlisted ? 'bi-heart-fill' : 'bi-heart' }}"></i>
+                        </button>
+                    </form>
+                </span>
 
                 <a href="{{ url('/cart') }}">
                     <i class="bi bi-bag"></i>
@@ -146,7 +159,13 @@
                 <img src="{{ $productImage }}" alt="{{ $product->name }}">
 
                 <span>
-                    <i class="bi bi-heart"></i>
+                    <form action="{{ route('frontend.wishlist.toggle', $product) }}" method="POST" data-wishlist-toggle data-wishlist-product="{{ $product->id }}">
+                        @csrf
+
+                        <button type="submit" class="wishlist-floating-btn {{ $isWishlisted ? 'active' : '' }}" aria-label="Toggle {{ $product->name }} wishlist">
+                            <i class="bi {{ $isWishlisted ? 'bi-heart-fill' : 'bi-heart' }}"></i>
+                        </button>
+                    </form>
                 </span>
 
             </section>
@@ -160,9 +179,11 @@
 
                 <b>{{ $brandName }}</b>
 
-                <div class="product-stars">
-                    ★★★★★ <strong>4.0</strong> <span>(45 reviews)</span>
-                </div>
+                @if($reviewCount)
+                    <div class="product-stars">
+                        ★★★★★ <strong>{{ number_format($reviewAverage, 1) }}</strong> <span>({{ $reviewCount }} reviews)</span>
+                    </div>
+                @endif
 
                 <p>
                     {{ $product->description ?: 'Premium fashion product crafted for comfort, style and everyday confidence.' }}
@@ -243,29 +264,28 @@
                     </a>
                 </h2>
 
-                <div class="product-sizes">
+                <div class="product-sizes" id="productSizeOptions">
 
                     @if(count($sizes))
 
                         @foreach($sizes as $index => $size)
-                            <span class="{{ $index === 2 ? 'selected' : '' }}">
+                            <span role="button" tabindex="0" data-size-option="{{ $size }}">
                                 {{ $size }}
                             </span>
                         @endforeach
 
                     @else
 
-                        <span>XS</span>
-                        <span>S</span>
-                        <span>M</span>
-                        <span class="selected">L</span>
-                        <span>XL</span>
-                        <span>XXL</span>
-                        <span>3XL</span>
+                        @foreach(['XS', 'S', 'M', 'L', 'XL', 'XXL', '3XL'] as $fallbackSize)
+                            <span role="button" tabindex="0" data-size-option="{{ $fallbackSize }}">
+                                {{ $fallbackSize }}
+                            </span>
+                        @endforeach
 
                     @endif
 
                 </div>
+                <small class="product-size-alert" id="productSizeAlert" hidden>Please select a size first.</small>
 
             </section>
 
@@ -385,81 +405,133 @@
                 <img src="{{ $homeTrialImage }}" alt="Home trial details">
             </section>
 
-            {{-- REVIEW TITLE --}}
-            <section class="product-review-title">
-                <h2>Customer Review (124)</h2>
-                <i class="bi bi-chevron-right"></i>
-            </section>
+            @if($reviewCount)
+                {{-- REVIEW TITLE --}}
+                <section class="product-review-title">
+                    <h2>Customer Review ({{ $reviewCount }})</h2>
+                    <i class="bi bi-chevron-right"></i>
+                </section>
 
-            {{-- RATING --}}
-            <section class="product-rating">
+                {{-- RATING --}}
+                <section class="product-rating">
 
-                <h2>Overall Rating</h2>
+                    <h2>Overall Rating</h2>
 
-                <div>
-                    <strong>4.8</strong>
+                    <div>
+                        <strong>{{ number_format($reviewAverage, 1) }}</strong>
 
-                    <span>
-                        ★★★★★
-                        <small>(45 reviews)</small>
-                    </span>
+                        <span>
+                            ★★★★★
+                            <small>({{ $reviewCount }} reviews)</small>
+                        </span>
 
-                    <p>
-                        5 <i></i> 912<br>
-                        4 <i></i> 912<br>
-                        3 <i></i> 912<br>
-                        2 <i></i> 912<br>
-                        1 <i></i> 912
-                    </p>
-                </div>
+                        <p>
+                            @foreach($ratingBreakdown as $rating => $count)
+                                {{ $rating }} <i style="width: {{ $reviewCount ? max(8, round(($count / $reviewCount) * 70)) : 8 }}px;"></i> {{ $count }}<br>
+                            @endforeach
+                        </p>
+                    </div>
 
-            </section>
+                    <div class="product-review-list">
+                        @foreach($reviews->take(3) as $review)
+                            <article>
+                                <strong>{{ number_format((float) data_get($review, 'rating', 0), 1) }} ★</strong>
+                                <p>{{ data_get($review, 'comment') ?: data_get($review, 'review') }}</p>
+                                <small>{{ data_get($review, 'user.name') ?: data_get($review, 'name') ?: 'Verified Customer' }}</small>
+                            </article>
+                        @endforeach
+                    </div>
 
-            {{-- CUSTOMER PHOTOS --}}
-            <section class="product-photos">
+                </section>
 
-                <h2>Customer photos (248)</h2>
+                @if($reviewPhotos->isNotEmpty())
+                    {{-- CUSTOMER PHOTOS --}}
+                    <section class="product-photos">
 
-                <div>
-                    <img src="{{ $productImage }}" alt="Customer photo">
-                    <img src="{{ $productImage }}" alt="Customer photo">
-                    <img src="{{ $productImage }}" alt="Customer photo">
+                        <h2>Customer photos ({{ $reviewPhotos->count() }})</h2>
 
-                    <b>
-                        +244<br>More
-                    </b>
-                </div>
+                        <div>
+                            @foreach($reviewPhotos as $photo)
+                                <img src="{{ $imageUrl($photo, 'assets/images/product-man.png') }}" alt="Customer photo">
+                            @endforeach
+                        </div>
 
-            </section>
+                    </section>
+                @endif
+            @endif
 
         </main>
 
        <footer class="product-bottom">
 
-    <form action="{{ route('frontend.cart.add', $product) }}" method="POST" id="addToCartForm">
+    
+
+    <a href="javascript:void(0)" onclick="document.getElementById('addToCartForm').requestSubmit();">
+        Buy Now
+        <small>Get in 30-60 mint</small>
+    </a>
+    
+
+    <a href="javascript:void(0)" onclick="document.getElementById('addToCartForm').requestSubmit();">
+        Add to bag
+    </a>
+
+</footer>
+<form action="{{ route('frontend.cart.add', $product) }}" method="POST" id="addToCartForm">
         @csrf
 
-        @if(count($sizes))
-            <input type="hidden" name="size" value="{{ $sizes[0] }}">
-        @endif
+        <input type="hidden" name="size" id="selectedProductSize" value="">
 
         <input type="hidden" name="colour" value="{{ $product->colour ?? '' }}">
         <input type="hidden" name="qty" value="1">
     </form>
 
-    <a href="javascript:void(0)" onclick="document.getElementById('addToCartForm').submit();">
-        Add to bag
-    </a>
-
-    <a href="javascript:void(0)" onclick="document.getElementById('addToCartForm').submit();">
-        Buy Now
-        <small>Get in 30-60 mint</small>
-    </a>
-
-</footer>
-
     </div>
 
+    <div class="toast-container position-fixed end-0 p-3">
+        <div id="cartToast" class="toast align-items-center text-bg-dark border-0" role="status" aria-live="polite" aria-atomic="true">
+            <div class="d-flex">
+                <div class="toast-body">Product added to cart.</div>
+                <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const sizeOptions = document.querySelectorAll('[data-size-option]');
+        const selectedSizeInput = document.getElementById('selectedProductSize');
+        const sizeAlert = document.getElementById('productSizeAlert');
+        const addToCartForm = document.getElementById('addToCartForm');
+
+        function selectProductSize(option) {
+            sizeOptions.forEach((item) => item.classList.remove('selected'));
+            option.classList.add('selected');
+            selectedSizeInput.value = option.dataset.sizeOption || option.textContent.trim();
+            sizeAlert.hidden = true;
+        }
+
+        sizeOptions.forEach((option) => {
+            option.addEventListener('click', () => selectProductSize(option));
+            option.addEventListener('keydown', (event) => {
+                if (event.key === 'Enter' || event.key === ' ') {
+                    event.preventDefault();
+                    selectProductSize(option);
+                }
+            });
+        });
+
+        addToCartForm.addEventListener('submit', (event) => {
+            if (!selectedSizeInput.value) {
+                event.preventDefault();
+                sizeAlert.hidden = false;
+                document.getElementById('productSizeOptions').scrollIntoView({
+                    behavior: 'smooth',
+                    block: 'center'
+                });
+            }
+        });
+    </script>
+    <script src="{{ asset('assets/js/main.js') }}"></script>
 </body>
 
 </html>

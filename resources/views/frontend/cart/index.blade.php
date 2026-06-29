@@ -112,6 +112,24 @@
         .delivery-required-alert {
             margin: 12px 16px;
         }
+
+        .checkout-bottom > a {
+            display: flex !important;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            min-width: 0;
+            padding: 0 10px;
+            white-space: nowrap;
+            line-height: 1.2;
+            text-align: center;
+        }
+
+        .checkout-bottom > a i {
+            flex: 0 0 auto;
+            margin: 0;
+            line-height: 1;
+        }
     </style>
 </head>
 

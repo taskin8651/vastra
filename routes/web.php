@@ -11,9 +11,12 @@ use App\Http\Controllers\Frontend\ReturnRequestController;
 use App\Http\Controllers\Frontend\WishlistController;
 use App\Http\Controllers\Frontend\TrialController;
 use App\Http\Controllers\Frontend\HomeController;
+use App\Http\Controllers\Frontend\SearchController;
 
 Route::get('/', [HomeController::class, 'index'])->name('frontend.home');
+Route::get('/search', [SearchController::class, 'index'])->name('frontend.search');
 Route::view('/support', 'frontend.support')->name('frontend.support');
+Route::view('/size-guide', 'frontend.size-guide')->name('frontend.size-guide');
 Route::get('/categories', 'Frontend\CategoryController@index')->name('frontend.categories.index');
 Route::middleware('auth')->group(function () {
     Route::get('/my-trials', [TrialController::class, 'index'])

@@ -16,8 +16,10 @@ class TrialController extends Controller
             ->where('user_id', auth()->id())
             ->where('delivery_method', 'home_trial')
             ->with([
-                'items.product.brand',
-                'items.product.category.audience',
+                'items.product.media',
+                'items.product.brand.media',
+                'items.product.category.media',
+                'items.product.category.audience.media',
             ])
             ->when($tab === 'upcoming', function ($query) {
                 $query->whereNotIn('order_status', [

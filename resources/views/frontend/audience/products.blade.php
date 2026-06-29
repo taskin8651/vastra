@@ -19,20 +19,8 @@
         ? asset($salePath)
         : asset('assets/images/shirts-sale.png');
 
-    $imageUrl = function ($path, $fallback = 'assets/images/shirts-product.png') {
-        if (! $path) {
-            return asset($fallback);
-        }
-
-        if (Str::startsWith($path, ['http://', 'https://'])) {
-            return $path;
-        }
-
-        if (Str::startsWith($path, ['assets/', 'storage/'])) {
-            return asset($path);
-        }
-
-        return asset('storage/' . $path);
+    $productImageUrl = function ($product) {
+        return $product->image_url ?: asset('assets/images/shirts-product.png');
     };
 
     $brands = $products->getCollection()
@@ -147,7 +135,7 @@
         @forelse($products as $product)
 
             @php
-                $productImage = $imageUrl($product->image_path);
+                $productImage = $productImageUrl($product);
 
                 $productLink = '';
 

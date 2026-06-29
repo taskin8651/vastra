@@ -98,22 +98,38 @@
             display: flex;
             justify-content: center;
         }
+
+        .orders-tabs {
+            width: 100%;
+            max-width: 100%;
+            display: flex;
+            align-items: stretch;
+            gap: 18px;
+            overflow-x: auto;
+            overflow-y: hidden;
+            padding: 0 16px;
+            scroll-snap-type: x proximity;
+            -webkit-overflow-scrolling: touch;
+            scrollbar-width: none;
+        }
+
+        .orders-tabs::-webkit-scrollbar {
+            display: none;
+        }
+
+        .orders-tabs a {
+            flex: 0 0 auto;
+            min-width: max-content;
+            padding: 0 2px;
+            scroll-snap-align: start;
+            white-space: nowrap;
+        }
     </style>
 </head>
 
 <body class="orders-page">
 
     <div class="site-wrap">
-
-        <div class="phone-status">
-            <span>9:41</span>
-
-            <span class="phone-status-icons">
-                <i class="bi bi-reception-4"></i>
-                <i class="bi bi-wifi"></i>
-                <i class="bi bi-battery-full"></i>
-            </span>
-        </div>
 
         <header class="orders-header">
             <a href="{{ url('/') }}">
@@ -175,8 +191,8 @@
                         @php
                             $product = $item->product;
 
-                            $productImage = $product
-                                ? $imageUrl($product->image_path)
+                            $productImage = $product && $product->image_url
+                                ? $product->image_url
                                 : asset('assets/images/order-shirt.png');
 
                             $audienceName = optional(optional(optional($product)->category)->audience)->name;

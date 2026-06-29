@@ -22,7 +22,7 @@ class ReturnRequestController extends Controller
                 ->with('message', 'Return request is available only for delivered orders.');
         }
 
-        $order->load(['items.product.brand', 'items.product.category']);
+        $order->load(['items.product.media', 'items.product.brand.media', 'items.product.category.media']);
 
         return view('frontend.returns.create', compact('order'));
     }

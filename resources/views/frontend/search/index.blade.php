@@ -5,21 +5,7 @@
     use Illuminate\Support\Str;
 
     $productImage = function ($product) {
-        $path = $product->image_path;
-
-        if (! $path) {
-            return asset('assets/images/product-man.png');
-        }
-
-        if (Str::startsWith($path, ['http://', 'https://'])) {
-            return $path;
-        }
-
-        if (Str::startsWith($path, ['assets/', 'storage/'])) {
-            return asset($path);
-        }
-
-        return asset('storage/' . $path);
+        return $product->image_url ?: asset('assets/images/product-man.png');
     };
 
     $discountPercent = function ($product) {

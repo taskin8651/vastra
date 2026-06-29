@@ -15,6 +15,7 @@ class BrandController extends Controller
     {
         $brands = Brand::query()
             ->active()
+            ->with('media')
             ->withCount([
                 'products as active_products_count' => function ($query) {
                     $query->active();
@@ -30,6 +31,7 @@ class BrandController extends Controller
 
         $audiences = Audience::query()
             ->active()
+            ->with('media')
             ->orderBy('sort_order')
             ->get();
 
@@ -42,6 +44,7 @@ class BrandController extends Controller
 
         $audiences = Audience::query()
             ->active()
+            ->with('media')
             ->whereHas('categories.products', function ($query) use ($brand) {
                 $query->where('brand_id', $brand->id)
                     ->active();
@@ -52,7 +55,7 @@ class BrandController extends Controller
         $products = Product::query()
             ->active()
             ->where('brand_id', $brand->id)
-            ->with(['brand', 'category.audience'])
+            ->with(['media', 'brand.media', 'category.media', 'category.audience.media'])
             ->when($request->q, function ($query) use ($request) {
                 $query->where(function ($q) use ($request) {
                     $q->where('name', 'like', '%' . $request->q . '%')

@@ -1,5 +1,34 @@
 @extends('layouts.admin')
+
 @section('page-title', $brand->exists ? 'Edit Brand' : 'Add Brand')
+
 @section('content')
-<div class="admin-page-head"><div><a class="admin-back-link" href="{{ route('admin.brands.index') }}">← Back to list</a><h2 class="admin-page-title">{{ $brand->exists ? 'Edit' : 'Add' }} Brand</h2></div></div><form method="POST" action="{{ $brand->exists ? route('admin.brands.update', $brand) : route('admin.brands.store') }}">@csrf @if($brand->exists) @method('PUT') @endif <div class="form-card"><div class="form-card-body"><div class="field-group"><label class="field-label">Name *</label><input class="field-input" name="name" value="{{ old('name', $brand->name) }}" required></div><div class="field-group"><label class="field-label">Slug</label><input class="field-input" name="slug" value="{{ old('slug', $brand->slug) }}"></div><div class="field-group"><label class="field-label">Logo path</label><input class="field-input" name="logo_path" value="{{ old('logo_path', $brand->logo_path) }}"></div><div class="field-group"><label class="field-label">Display order</label><input class="field-input" type="number" min="0" name="sort_order" value="{{ old('sort_order', $brand->sort_order ?? 0) }}"></div><label><input type="checkbox" name="is_active" value="1" @checked(old('is_active', $brand->exists ? $brand->is_active : true))> Active</label></div></div><div class="form-actions"><button class="btn-primary">Save Brand</button><a class="btn-ghost" href="{{ route('admin.brands.index') }}">Cancel</a></div></form>
+<div class="admin-page-head">
+    <div>
+        <a class="admin-back-link" href="{{ route('admin.brands.index') }}">Back to list</a>
+        <h2 class="admin-page-title">{{ $brand->exists ? 'Edit' : 'Add' }} Brand</h2>
+    </div>
+</div>
+
+<form method="POST" enctype="multipart/form-data" action="{{ $brand->exists ? route('admin.brands.update', $brand) : route('admin.brands.store') }}">
+    @csrf
+    @if($brand->exists)
+        @method('PUT')
+    @endif
+
+    <div class="form-card">
+        <div class="form-card-body">
+            <div class="field-group"><label class="field-label">Name *</label><input class="field-input" name="name" value="{{ old('name', $brand->name) }}" required></div>
+            <div class="field-group"><label class="field-label">Slug</label><input class="field-input" name="slug" value="{{ old('slug', $brand->slug) }}"></div>
+            <div class="field-group"><label class="field-label">Brand image/logo</label><input class="field-input" type="file" name="image" accept="image/*">@if($brand->image_url)<small>Current image uploaded.</small>@endif</div>
+            <div class="field-group"><label class="field-label">Display order</label><input class="field-input" type="number" min="0" name="sort_order" value="{{ old('sort_order', $brand->sort_order ?? 0) }}"></div>
+            <label><input type="checkbox" name="is_active" value="1" @checked(old('is_active', $brand->exists ? $brand->is_active : true))> Active</label>
+        </div>
+    </div>
+
+    <div class="form-actions">
+        <button class="btn-primary">Save Brand</button>
+        <a class="btn-ghost" href="{{ route('admin.brands.index') }}">Cancel</a>
+    </div>
+</form>
 @endsection

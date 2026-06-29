@@ -15,15 +15,6 @@
 
   <div class="site-wrap">
 
-    <div class="phone-status" aria-hidden="true">
-      <span>8:00</span>
-      <span class="phone-status-icons">
-        <i class="bi bi-reception-4"></i>
-        <i class="bi bi-wifi"></i>
-        <i class="bi bi-battery-full"></i>
-      </span>
-    </div>
-
     <!-- ================= HEADER ================= -->
     <header class="site-header sticky-top">
       <div class="container-fluid page-container">

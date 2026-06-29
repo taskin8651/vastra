@@ -5,14 +5,16 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Spatie\MediaLibrary\HasMedia;
+use Spatie\MediaLibrary\InteractsWithMedia;
 
-class Product extends Model
+class Product extends Model implements HasMedia
 {
-    use HasFactory, SoftDeletes;
+    use HasFactory, SoftDeletes, InteractsWithMedia;
 
     protected $fillable = [
         'category_id', 'brand_id', 'name', 'slug', 'sku', 'description', 'price',
-        'compare_at_price', 'stock_quantity', 'image_path', 'is_active', 'is_featured',
+        'compare_at_price', 'stock_quantity', 'is_active', 'is_featured',
         'colour', 'available_colours', 'available_sizes', 'closure_type', 'fashion_type',
         'hemline', 'knit_or_woven', 'product_length', 'season', 'transparency',
         'stretchability', 'wash_care', 'fit_type', 'fabric_details', 'fabric_composition',
@@ -28,6 +30,21 @@ class Product extends Model
     public function scopeActive($query) { return $query->where('is_active', true); }
 
     public function getRouteKeyName(): string { return 'slug'; }
+
+    public function registerMediaCollections(): void
+    {
+        $this->addMediaCollection('images');
+    }
+
+    public function getImageUrlAttribute(): ?string
+    {
+        return $this->getFirstMediaUrl('images') ?: null;
+    }
+
+    public function getImageUrlsAttribute(): array
+    {
+        return $this->getMedia('images')->map->getUrl()->values()->toArray();
+    }
 
     public function category()
     {

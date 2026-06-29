@@ -22,7 +22,7 @@ class CategoryProductController extends Controller
         $products = Product::query()
             ->active()
             ->where('category_id', $category->id)
-            ->with(['category', 'brand'])
+            ->with(['media', 'category.media', 'brand.media'])
             ->when($request->q, function ($query) use ($request) {
                 $query->where(function ($searchQuery) use ($request) {
                     $searchQuery

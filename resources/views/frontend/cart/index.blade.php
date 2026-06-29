@@ -137,16 +137,6 @@
 
     <div class="site-wrap">
 
-        <div class="phone-status">
-            <span>8:00</span>
-
-            <span class="phone-status-icons">
-                <i class="bi bi-reception-4"></i>
-                <i class="bi bi-wifi"></i>
-                <i class="bi bi-battery-full"></i>
-            </span>
-        </div>
-
         <header class="checkout-header">
 
             <a href="{{ url('/') }}">
@@ -217,7 +207,7 @@
                     <article>
 
                         <a href="{{ $productLink }}">
-                            <img src="{{ $imageUrl($product->image_path) }}" alt="{{ $product->name }}">
+                            <img src="{{ $product->image_url ?: asset('assets/images/cotton-shirt.png') }}" alt="{{ $product->name }}">
                         </a>
 
                         <div>

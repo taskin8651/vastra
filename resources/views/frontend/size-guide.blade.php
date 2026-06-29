@@ -13,8 +13,6 @@
 
 <body class="size-page">
     <div class="site-wrap">
-        <div class="phone-status"><span>9:41</span><span class="phone-status-icons"><i class="bi bi-reception-4"></i><i
-                    class="bi bi-wifi"></i><i class="bi bi-battery-full"></i></span></div>
         <header class="simple-page-header"><a href="{{ url()->previous() !== url()->current() ? url()->previous() : route('frontend.home') }}"><i class="bi bi-chevron-left"></i></a>
             <h1>Size Guide</h1>
         </header>

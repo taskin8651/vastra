@@ -127,16 +127,6 @@
 
     <div class="site-wrap">
 
-        <div class="phone-status">
-            <span>9:41</span>
-
-            <span class="phone-status-icons">
-                <i class="bi bi-reception-4"></i>
-                <i class="bi bi-wifi"></i>
-                <i class="bi bi-battery-full"></i>
-            </span>
-        </div>
-
         <header class="wishlist-header">
             <a href="{{ url('/') }}">
                 <i class="bi bi-chevron-left"></i>
@@ -167,7 +157,7 @@
                         continue;
                     }
 
-                    $productImage = $imageUrl($product->image_path);
+                    $productImage = $product->image_url ?: asset('assets/images/cotton-shirt.png');
 
                     $audienceName = optional(optional($product->category)->audience)->name;
                     $colour = $product->colour;

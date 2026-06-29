@@ -12,13 +12,14 @@ class CategoryController extends Controller
     {
         $audiences = Audience::query()
             ->active()
+            ->with('media')
             ->orderBy('sort_order')
             ->orderBy('name')
             ->get();
 
         $categories = Category::query()
             ->active()
-            ->with('audience')
+            ->with(['media', 'audience.media'])
             ->withCount([
                 'products as active_products_count' => function ($query) {
                     $query->active();

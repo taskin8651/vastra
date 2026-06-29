@@ -23,16 +23,6 @@
 
     <div class="site-wrap">
 
-        <div class="phone-status" aria-hidden="true">
-            <span>8:00</span>
-
-            <span class="phone-status-icons">
-                <i class="bi bi-reception-4"></i>
-                <i class="bi bi-wifi"></i>
-                <i class="bi bi-battery-full"></i>
-            </span>
-        </div>
-
         <!-- ================= HEADER ================= -->
         <header class="site-header sticky-top">
             <div class="container-fluid page-container">
@@ -137,6 +127,10 @@
       <!-- ================= QUICK CATEGORY CARDS ================= -->
     @php
     $audienceImage = function ($audience) {
+        if ($audience->image_url) {
+            return $audience->image_url;
+        }
+
         $path = 'assets/images/category-' . $audience->slug . '.png';
 
         if (file_exists(public_path($path))) {
@@ -289,21 +283,7 @@
       <!-- ================= TRENDING ================= -->
    @php
     $productImage = function ($product) {
-        $path = $product->image_path;
-
-        if (! $path) {
-            return asset('assets/images/product-man.png');
-        }
-
-        if (\Illuminate\Support\Str::startsWith($path, ['http://', 'https://'])) {
-            return $path;
-        }
-
-        if (\Illuminate\Support\Str::startsWith($path, ['assets/', 'storage/'])) {
-            return asset($path);
-        }
-
-        return asset('storage/' . $path);
+        return $product->image_url ?: asset('assets/images/product-man.png');
     };
 
     $discountPercent = function ($product) {
@@ -449,16 +429,8 @@
     @php
 
     $categoryImage = function ($category) {
-        if ($category->image_path) {
-            if (Str::startsWith($category->image_path, ['http://', 'https://'])) {
-                return $category->image_path;
-            }
-
-            if (Str::startsWith($category->image_path, ['assets/', 'storage/'])) {
-                return asset($category->image_path);
-            }
-
-            return asset('storage/' . $category->image_path);
+        if ($category->image_url) {
+            return $category->image_url;
         }
 
         $path = 'assets/images/cat-' . $category->slug . '.png';
@@ -554,21 +526,7 @@
     @php
 
     $productImage = function ($product) {
-        $path = $product->image_path;
-
-        if (! $path) {
-            return asset('assets/images/product-man.png');
-        }
-
-        if (Str::startsWith($path, ['http://', 'https://'])) {
-            return $path;
-        }
-
-        if (Str::startsWith($path, ['assets/', 'storage/'])) {
-            return asset($path);
-        }
-
-        return asset('storage/' . $path);
+        return $product->image_url ?: asset('assets/images/product-man.png');
     };
 
     $discountPercent = function ($product) {

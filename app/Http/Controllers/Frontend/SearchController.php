@@ -15,7 +15,7 @@ class SearchController extends Controller
 
         $products = Product::query()
             ->active()
-            ->with(['brand', 'category.audience'])
+            ->with(['media', 'brand.media', 'category.media', 'category.audience.media'])
             ->when($query !== '', function ($productQuery) use ($query) {
                 $productQuery->where(function ($searchQuery) use ($query) {
                     $searchQuery

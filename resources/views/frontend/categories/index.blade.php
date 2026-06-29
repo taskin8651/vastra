@@ -1,17 +1,7 @@
 @php
     $categoryImage = function ($category) {
-        $path = $category->image_path;
-
-        if ($path) {
-            if (\Illuminate\Support\Str::startsWith($path, ['http://', 'https://'])) {
-                return $path;
-            }
-
-            if (\Illuminate\Support\Str::startsWith($path, ['assets/', 'storage/'])) {
-                return asset($path);
-            }
-
-            return asset('storage/' . $path);
+        if ($category->image_url) {
+            return $category->image_url;
         }
 
         $fallbackPath = 'assets/images/cat-' . $category->slug . '.png';
@@ -46,16 +36,6 @@
 <body>
 
     <div class="site-wrap">
-
-        <div class="phone-status">
-            <span>9:41</span>
-
-            <span class="phone-status-icons">
-                <i class="bi bi-reception-4"></i>
-                <i class="bi bi-wifi"></i>
-                <i class="bi bi-battery-full"></i>
-            </span>
-        </div>
 
         <header class="wishlist-header">
             <a href="{{ route('frontend.home') }}">

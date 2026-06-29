@@ -14,30 +14,18 @@
 @php
     use Illuminate\Support\Str;
 
-    $brandHeroPath = 'assets/images/' . $brand->slug . '-hero.png';
+    $brandHeroImage = $brand->image_url ?: asset('assets/images/zara-hero.png');
 
-    $brandHeroImage = file_exists(public_path($brandHeroPath))
-        ? asset($brandHeroPath)
-        : asset('assets/images/zara-hero.png');
-
-    $imageUrl = function ($path, $fallback = 'assets/images/zara-product.png') {
-        if (! $path) {
-            return asset($fallback);
-        }
-
-        if (Str::startsWith($path, ['http://', 'https://'])) {
-            return $path;
-        }
-
-        if (Str::startsWith($path, ['assets/', 'storage/'])) {
-            return asset($path);
-        }
-
-        return asset('storage/' . $path);
+    $productImage = function ($product) {
+        return $product->image_url ?: asset('assets/images/zara-product.png');
     };
 
-    $audienceImage = function ($slug) {
-        return match ($slug) {
+    $audienceImage = function ($audience) {
+        if ($audience->image_url) {
+            return $audience->image_url;
+        }
+
+        return match ($audience->slug) {
             'men' => asset('assets/images/cat-men.png'),
             'women' => asset('assets/images/cat-women.png'),
             'kids' => asset('assets/images/cat-kids.png'),
@@ -104,7 +92,7 @@
             <div onclick="window.location='{{ route('frontend.brands.show', [$brand, 'audience' => $audience->slug]) }}'"
                  style="cursor:pointer;">
 
-                <img src="{{ $audienceImage($audience->slug) }}" alt="{{ $audience->name }}">
+                <img src="{{ $audienceImage($audience) }}" alt="{{ $audience->name }}">
 
                 <span>{{ $audience->name }}</span>
 
@@ -179,7 +167,7 @@
             <article class="zara-product">
 
                 <a href="{{ route('frontend.products.show', $product) }}">
-                    <img src="{{ $imageUrl($product->image_path) }}" alt="{{ $product->name }}">
+                    <img src="{{ $productImage($product) }}" alt="{{ $product->name }}">
                 </a>
 
                 <form action="{{ route('frontend.wishlist.toggle', $product) }}" method="POST" data-wishlist-toggle data-wishlist-product="{{ $product->id }}" class="wishlist-card-form">

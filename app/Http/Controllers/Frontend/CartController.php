@@ -19,7 +19,7 @@ class CartController extends Controller
             ->values();
 
         $products = Product::query()
-            ->with(['brand', 'category.audience'])
+            ->with(['media', 'brand.media', 'category.media', 'category.audience.media'])
             ->whereIn('id', $productIds)
             ->get()
             ->keyBy('id');

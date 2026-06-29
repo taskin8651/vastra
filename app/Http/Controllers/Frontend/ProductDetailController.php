@@ -14,14 +14,18 @@ class ProductDetailController extends Controller
 
         $product->load([
             'brand',
+            'brand.media',
+            'media',
             'category.audience',
+            'category.media',
+            'category.audience.media',
         ]);
 
         $relatedProducts = Product::query()
             ->active()
             ->where('id', '!=', $product->id)
             ->where('category_id', $product->category_id)
-            ->with(['brand', 'category'])
+            ->with(['media', 'brand.media', 'category.media'])
             ->latest()
             ->take(6)
             ->get();

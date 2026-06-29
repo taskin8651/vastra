@@ -22,15 +22,6 @@
 
     <div class="site-wrap">
 
-        <div class="phone-status">
-            <span>8:00</span>
-            <span class="phone-status-icons">
-                <i class="bi bi-reception-4"></i>
-                <i class="bi bi-wifi"></i>
-                <i class="bi bi-battery-full"></i>
-            </span>
-        </div>
-
         <header class="category-header @yield('header_class')">
 
             @hasSection('header_left')

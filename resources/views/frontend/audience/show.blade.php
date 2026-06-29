@@ -18,20 +18,8 @@
         ? asset($trialPath)
         : null;
 
-    $imageUrl = function ($path, $fallback = 'assets/images/category-placeholder.png') {
-        if (! $path) {
-            return asset($fallback);
-        }
-
-        if (Str::startsWith($path, ['http://', 'https://'])) {
-            return $path;
-        }
-
-        if (Str::startsWith($path, ['assets/', 'storage/'])) {
-            return asset($path);
-        }
-
-        return asset('storage/' . $path);
+    $categoryImage = function ($category) {
+        return $category->image_url ?: asset('assets/images/category-placeholder.png');
     };
 @endphp
 
@@ -93,7 +81,7 @@
                     <a href="{{ route('frontend.category.products', [$audience, $category]) }}"
                        class="category-tile reference-{{ $audienceSlug }}-tile">
 
-                        <img src="{{ $imageUrl($category->image_path) }}"
+                        <img src="{{ $categoryImage($category) }}"
                              alt="{{ $category->name }}">
 
 
@@ -116,8 +104,8 @@
 
     {{-- HOME TRIAL BANNER --}}
     @if($trialImage)
-        <section class="home-trial-banner reference-{{ $audienceSlug }}-trial">
-            <img src="{{ $trialImage }}" alt="{{ $audience->name }} Home Trial">
+        <section class="home-trial-banner reference-women-trial">
+            <img src="{{ asset('assets/images/kids-trial.png') }}" alt="{{ $audience->name }} Home Trial">
         </section>
     @endif
 

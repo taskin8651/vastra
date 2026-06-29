@@ -21,16 +21,6 @@
 
     <div class="site-wrap">
 
-        <div class="phone-status">
-            <span>8:00</span>
-
-            <span class="phone-status-icons">
-                <i class="bi bi-reception-4"></i>
-                <i class="bi bi-wifi"></i>
-                <i class="bi bi-battery-full"></i>
-            </span>
-        </div>
-
         <header class="confirmed-header">
 
             <i class="bi bi-list"></i>
@@ -247,8 +237,8 @@
                     <p>Our support team is here for you.</p>
                 </div>
 
-                <a href="{{ url('/support') }}">Chat with Us</a>
-                <a href="{{ url('/contact') }}">Call Us</a>
+                <a href="{{ route('frontend.support') }}#chat">Chat with Us</a>
+                <a href="tel:01237483424">Call Us</a>
             </section>
 
         </main>
@@ -258,9 +248,11 @@
             <div>
                 <strong>Rs{{ number_format($order->total_payable, 0) }}</strong>
 
-                <a href="{{ route('frontend.orders.show', $order) }}">
-    View Details
-</a>
+                <a href="{{ route('frontend.orders.show', $order) }}"
+                   style="display:inline-flex;align-items:center;gap:6px;width:max-content;margin-top:6px;color:#111;font-size:12px;font-weight:700;text-decoration:none;line-height:1;white-space:nowrap; background:none;">
+                    View Details
+                    <i class="bi bi-chevron-right" style="font-size:13px;line-height:1;"></i>
+                </a>
             </div>
 
             <a href="{{ url('/') }}">

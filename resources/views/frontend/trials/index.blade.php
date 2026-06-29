@@ -96,16 +96,6 @@
 
     <div class="site-wrap">
 
-        <div class="phone-status">
-            <span>9:41</span>
-
-            <span class="phone-status-icons">
-                <i class="bi bi-reception-4"></i>
-                <i class="bi bi-wifi"></i>
-                <i class="bi bi-battery-full"></i>
-            </span>
-        </div>
-
         <header class="trial-header">
             <a href="{{ url('/') }}">
                 <i class="bi bi-chevron-left"></i>
@@ -163,12 +153,12 @@
                     $firstProduct = optional($firstItem)->product;
                     $secondProduct = optional($secondItem)->product;
 
-                    $firstImage = $firstProduct
-                        ? $imageUrl($firstProduct->image_path, 'assets/images/trial-look-one.png')
+                    $firstImage = $firstProduct && $firstProduct->image_url
+                        ? $firstProduct->image_url
                         : asset('assets/images/trial-look-one.png');
 
-                    $secondImage = $secondProduct
-                        ? $imageUrl($secondProduct->image_path, 'assets/images/trial-look-two.png')
+                    $secondImage = $secondProduct && $secondProduct->image_url
+                        ? $secondProduct->image_url
                         : asset('assets/images/trial-look-two.png');
 
                     $deliveryBy = $trial->created_at->copy()->addMinutes(60);

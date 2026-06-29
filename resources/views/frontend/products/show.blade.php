@@ -23,7 +23,8 @@
         return asset('storage/' . $path);
     };
 
-    $productImage = $imageUrl($product->image_path);
+    $productImages = count($product->image_urls) ? $product->image_urls : [asset('assets/images/cotton-shirt.png')];
+    $productImage = $productImages[0];
 
     $colours = is_array($product->available_colours)
         ? $product->available_colours
@@ -45,7 +46,7 @@
         ? round($reviews->avg(fn ($review) => (float) data_get($review, 'rating', 0)), 1)
         : null;
     $reviewPhotos = $reviews
-        ->map(fn ($review) => data_get($review, 'image_path') ?: data_get($review, 'photo_path'))
+        ->map(fn ($review) => data_get($review, 'image_url') ?: data_get($review, 'photo_url'))
         ->filter()
         ->take(4)
         ->values();
@@ -86,16 +87,6 @@
 <body class="product-full-page">
 
     <div class="site-wrap">
-
-        <div class="phone-status">
-            <span>8:00</span>
-
-            <span class="phone-status-icons">
-                <i class="bi bi-reception-4"></i>
-                <i class="bi bi-wifi"></i>
-                <i class="bi bi-battery-full"></i>
-            </span>
-        </div>
 
         <header class="product-full-header">
 
@@ -169,6 +160,18 @@
                 </span>
 
             </section>
+
+            @if(count($productImages) > 1)
+                <section class="product-photos" style="padding-bottom:16px;">
+                    <h2>Product photos ({{ count($productImages) }})</h2>
+
+                    <div>
+                        @foreach(array_slice($productImages, 0, 4) as $galleryImage)
+                            <img src="{{ $galleryImage }}" alt="{{ $product->name }} image">
+                        @endforeach
+                    </div>
+                </section>
+            @endif
 
             {{-- PRODUCT BASIC INFO --}}
             <section class="product-copy">

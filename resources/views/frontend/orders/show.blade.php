@@ -229,16 +229,6 @@
 
     <div class="site-wrap">
 
-        <div class="phone-status">
-            <span>9:41</span>
-
-            <span class="phone-status-icons">
-                <i class="bi bi-reception-4"></i>
-                <i class="bi bi-wifi"></i>
-                <i class="bi bi-battery-full"></i>
-            </span>
-        </div>
-
         <header class="orders-header">
             <a href="{{ route('frontend.orders.index') }}">
                 <i class="bi bi-chevron-left"></i>
@@ -284,8 +274,8 @@
                     @php
                         $product = $item->product;
 
-                        $productImage = $product
-                            ? $imageUrl($product->image_path)
+                        $productImage = $product && $product->image_url
+                            ? $product->image_url
                             : asset('assets/images/order-shirt.png');
 
                         $audienceName = optional(optional(optional($product)->category)->audience)->name;

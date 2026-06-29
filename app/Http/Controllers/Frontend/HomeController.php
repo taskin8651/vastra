@@ -22,7 +22,7 @@ class HomeController extends Controller
         $trendingProducts = Product::query()
             ->active()
             ->where('is_featured', true)
-            ->with(['brand', 'category.audience'])
+            ->with(['media', 'brand.media', 'category.media', 'category.audience.media'])
             ->latest()
             ->take(4)
             ->get();
@@ -44,7 +44,7 @@ class HomeController extends Controller
 
         $shopCategories = Category::query()
             ->active()
-            ->with('audience')
+            ->with(['media', 'audience.media'])
             ->orderBy('sort_order')
             ->orderBy('name')
             ->take(6)
@@ -52,13 +52,14 @@ class HomeController extends Controller
 
             $topPickProducts = Product::query()
             ->active()
-            ->with(['brand', 'category.audience'])
+            ->with(['media', 'brand.media', 'category.media', 'category.audience.media'])
             ->latest()
             ->take(8)
             ->get();
 
             $brands = Brand::query()
             ->active()
+            ->with('media')
             ->withCount([
                 'products as active_products_count' => function ($query) {
                     $query->active();

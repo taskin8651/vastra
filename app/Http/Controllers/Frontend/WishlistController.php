@@ -13,8 +13,10 @@ class WishlistController extends Controller
         $wishlists = Wishlist::query()
             ->where('user_id', auth()->id())
             ->with([
-                'product.brand',
-                'product.category.audience',
+                'product.media',
+                'product.brand.media',
+                'product.category.media',
+                'product.category.audience.media',
             ])
             ->latest()
             ->get();

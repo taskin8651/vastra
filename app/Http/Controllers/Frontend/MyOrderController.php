@@ -15,8 +15,10 @@ class MyOrderController extends Controller
         $orders = Order::query()
             ->where('user_id', auth()->id())
             ->with([
-                'items.product.category.audience',
-                'items.product.brand',
+                'items.product.media',
+                'items.product.category.media',
+                'items.product.category.audience.media',
+                'items.product.brand.media',
             ])
             ->when($status === 'processing', function ($query) {
                 $query->whereIn('order_status', [
@@ -45,8 +47,10 @@ class MyOrderController extends Controller
         abort_if($order->user_id !== auth()->id(), 403);
 
         $order->load([
-            'items.product.category.audience',
-            'items.product.brand',
+            'items.product.media',
+            'items.product.category.media',
+            'items.product.category.audience.media',
+            'items.product.brand.media',
         ]);
 
         return view('frontend.orders.show', compact('order'));
